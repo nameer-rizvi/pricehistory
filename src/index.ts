@@ -1,1 +1,5 @@
-export * from "./array.js";
+function pricehistory() {
+  //
+}
+
+export default pricehistory;

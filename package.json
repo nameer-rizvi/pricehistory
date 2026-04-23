@@ -1,17 +1,17 @@
 {
-  "name": "@nameer/typescript-package",
+  "name": "pricehistory",
   "packageManager": "yarn@4.13.0",
   "version": "0.1.0",
-  "description": "Template for developing NPM packages written in TypeScript with support for CommonJS and ES Modules.",
+  "description": "todo",
   "author": "Nameer Rizvi (https://github.com/nameer-rizvi)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nameer-rizvi/typescript-package.git"
+    "url": "git+https://github.com/nameer-rizvi/pricehistory.git"
   },
-  "homepage": "https://github.com/nameer-rizvi/typescript-package#readme",
+  "homepage": "https://github.com/nameer-rizvi/pricehistory#readme",
   "bugs": {
-    "url": "https://github.com/nameer-rizvi/typescript-package/issues"
+    "url": "https://github.com/nameer-rizvi/pricehistory/issues"
   },
   "keywords": [
     "typescript",
