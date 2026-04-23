@@ -1,170 +1,189 @@
-// import { Option, DataPoint } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type Option,
+  type DataPoint,
+  type NormalizedOption,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setOptions(option: Option, series: DataPoint[]) {
-//   Object.assign(option, {
-//     datetime: "datetime",
-//     open: "open",
-//     high: "high",
-//     low: "low",
-//     close: "close",
-//     volume: "volume",
-//     ...option,
-//   });
+function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
+  const normalized = option as NormalizedOption;
 
-//   /*
-//    * BASE PRICE
-//    */
+  /*
+   * FIELD MAPPING
+   */
 
-//   if (option.basePrice === undefined && option.open !== undefined) {
-//     for (const curr of series) {
-//       const open = curr[option.open];
-//       if (simpul.isNumber(open)) {
-//         option.basePrice = open;
-//         break;
-//       }
-//     }
-//   }
+  normalized.datetime ??= "datetime";
+  normalized.open ??= "open";
+  normalized.high ??= "high";
+  normalized.low ??= "low";
+  normalized.close ??= "close";
+  normalized.volume ??= "volume";
 
-//   /*
-//    * RSI
-//    */
+  /*
+   * BASE PRICE
+   */
 
-//   if (option.rsi === true) {
-//     option.rsi = 14; // J. Welles Wilder's optimal setting
-//   }
+  if (normalized.basePrice === undefined) {
+    for (const curr of series) {
+      const open = curr[normalized.open];
+      if (utils.isNumberValid(open)) {
+        normalized.basePrice = open;
+        break;
+      }
+    }
+  }
 
-//   /*
-//    * EMA
-//    */
+  /*
+   * RSI
+   */
 
-//   if (option.ema === true) {
-//     option.ema = [5, 8, 13]; // The Fibonacci Trio
-//   } else if (simpul.isArray(option.ema)) {
-//     option.ema = option.ema.filter(simpul.isNumber);
-//   } else {
-//     option.ema = [];
-//   }
+  if (option.rsi === true) {
+    normalized.rsi = 14; // J. Welles Wilder's optimal setting
+  } else if (normalized.rsi !== undefined && !utils.isNumber(normalized.rsi)) {
+    normalized.rsi = false;
+  }
 
-//   /*
-//    * MACD
-//    */
+  normalized.rsi ??= false;
 
-//   if (option.macd === true) {
-//     option.macd = [12, 26, 9]; // Fast, Slow, Signal
-//   }
+  /*
+   * EMA
+   */
 
-//   if (simpul.isArray(option.macd)) {
-//     const macd = option.macd.filter(simpul.isNumber);
-//     if (macd.length === 3) {
-//       option.ema = [...new Set([...option.ema, macd[0], macd[1]])];
-//     }
-//   }
+  if (option.ema === true) {
+    normalized.ema = [5, 8, 13]; // The Fibonacci Trio
+  } else if (utils.isArray(normalized.ema)) {
+    normalized.ema = normalized.ema.filter(utils.isNumberValid);
+  } else {
+    normalized.ema = [];
+  }
 
-//   /*
-//    * SMA
-//    */
+  /*
+   * MACD
+   */
 
-//   if (option.sma === true) {
-//     option.sma = [10, 50]; // Personal preference
-//   } else if (simpul.isArray(option.sma)) {
-//     option.sma = option.sma.filter(simpul.isNumber);
-//   } else {
-//     option.sma = [];
-//   }
+  if (option.macd === true) {
+    normalized.macd = [12, 26, 9]; // Fast, Slow, Signal
+  }
 
-//   /*
-//    * SIGNAL
-//    */
+  if (utils.isArray(normalized.macd)) {
+    const macd = normalized.macd.filter(utils.isNumberValid);
+    if (macd.length === 3) {
+      normalized.macd = [macd[0], macd[1], macd[2]];
+      normalized.ema = [...new Set([...normalized.ema, macd[0], macd[1]])];
+    } else {
+      normalized.macd = false;
+    }
+  } else {
+    normalized.macd = false;
+  }
 
-//   if (simpul.isArray(option.signal)) {
-//     if (option.signal.every(simpul.isString)) option.signal = [option.signal];
-//     option.signal = option.signal.filter(simpul.isArrayNonEmpty);
-//   } else {
-//     option.signal = [];
-//   }
+  /*
+   * SMA
+   */
 
-//   /*
-//    * PHASE
-//    */
+  if (option.sma === true) {
+    normalized.sma = [10, 50]; // Personal preference
+  } else if (utils.isArray(normalized.sma)) {
+    normalized.sma = normalized.sma.filter(utils.isNumberValid);
+  } else {
+    normalized.sma = [];
+  }
 
-//   if (option.phase === true) {
-//     option.phase = 10; // Personal preference
-//   }
+  /*
+   * SIGNAL
+   */
 
-//   if (simpul.isNumber(option.phase)) {
-//     option.color = true;
-//     if (!option.sma.includes(option.phase)) option.sma.push(option.phase);
-//     const smaKey = `sma${option.phase}PriceClose`;
-//     const isSignal = option.signal.some(([anchor, ...compares]) => {
-//       return (
-//         anchor === smaKey &&
-//         compares.includes("priceHigh") &&
-//         compares.includes("priceLow")
-//       );
-//     });
-//     if (isSignal !== true) {
-//       option.signal.push([smaKey, "priceHigh", "priceLow"]);
-//     }
-//   }
+  if (utils.isArray(normalized.signal)) {
+    if (normalized.signal.every(utils.isString)) {
+      normalized.signal = [normalized.signal as unknown as string[]];
+    }
+    normalized.signal = normalized.signal.filter(utils.isArrayNonEmpty);
+  } else {
+    normalized.signal = [];
+  }
 
-//   /*
-//    * PRESSURE
-//    */
+  /*
+   * PHASE
+   */
 
-//   if (option.pressure === true) {
-//     option.pressure = 10; // Personal preference
-//   }
+  if (option.phase === true) {
+    normalized.phase = 10; // Personal preference
+  }
 
-//   if (simpul.isNumber(option.pressure)) {
-//     option.color = true;
-//     if (!option.sma.includes(option.pressure)) option.sma.push(option.pressure);
-//     const smaKey = `sma${option.pressure}PriceClose`;
-//     const isSignal = option.signal.some(([anchor, ...compares]) => {
-//       return (
-//         anchor === smaKey &&
-//         compares.includes("priceHigh") &&
-//         compares.includes("priceLow")
-//       );
-//     });
-//     if (isSignal !== true) {
-//       option.signal.push([smaKey, "priceHigh", "priceLow"]);
-//     }
-//   }
+  if (utils.isNumber(normalized.phase)) {
+    normalized.color = true;
+    if (!normalized.sma.includes(normalized.phase)) {
+      normalized.sma.push(normalized.phase);
+    }
+    ensureSignal(normalized, `sma${normalized.phase}PriceClose`);
+  } else {
+    normalized.phase = false;
+  }
 
-//   /*
-//    * ANCHOR
-//    */
+  /*
+   * PRESSURE
+   */
 
-//   if (option.anchor === true) {
-//     option.anchor = [0, 50, 100]; // Personal preference
-//   }
+  if (option.pressure === true) {
+    normalized.pressure = 10; // Personal preference
+  }
 
-//   if (simpul.isArray(option.anchor)) {
-//     option.anchor = option.anchor.filter(simpul.isNumber);
-//   } else {
-//     option.anchor = [];
-//   }
+  if (utils.isNumber(normalized.pressure)) {
+    normalized.color = true;
+    if (!normalized.sma.includes(normalized.pressure)) {
+      normalized.sma.push(normalized.pressure);
+    }
+    ensureSignal(normalized, `sma${normalized.pressure}PriceClose`);
+  } else {
+    normalized.pressure = false;
+  }
 
-//   /*
-//    * NORMALIZE
-//    */
+  /*
+   * ANCHOR
+   */
 
-//   if (simpul.isArray(option.normalize)) {
-//     option.normalize = option.normalize.filter(simpul.isString);
-//   } else {
-//     option.normalize = [];
-//   }
+  if (option.anchor === true) {
+    normalized.anchor = [0, 50, 100]; // Personal preference
+  }
 
-//   /*
-//    * SORTING
-//    */
+  if (utils.isArray(normalized.anchor)) {
+    normalized.anchor = normalized.anchor.filter(utils.isNumberValid);
+  } else {
+    normalized.anchor = [];
+  }
 
-//   option.ema.sort((a, b) => a - b);
+  /*
+   * NORMALIZE
+   */
 
-//   option.sma.sort((a, b) => a - b);
+  if (utils.isArray(normalized.normalize)) {
+    normalized.normalize = normalized.normalize.filter(utils.isString);
+  } else {
+    normalized.normalize = [];
+  }
 
-//   option.anchor.sort((a, b) => a - b);
-// }
+  /*
+   * SORTING
+   */
 
-// export default setOptions;
+  normalized.ema.sort((a, b) => a - b);
+  normalized.sma.sort((a, b) => a - b);
+  normalized.anchor.sort((a, b) => a - b);
+
+  return normalized;
+}
+
+function ensureSignal(normalized: NormalizedOption, smaKey: string): void {
+  const isSignal = normalized.signal.some(([anchor, ...compares]) => {
+    return (
+      anchor === smaKey &&
+      compares.includes("priceHigh") &&
+      compares.includes("priceLow")
+    );
+  });
+  if (isSignal !== true) {
+    normalized.signal.push([smaKey, "priceHigh", "priceLow"]);
+  }
+}
+
+export default setOptions;
