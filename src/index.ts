@@ -3,14 +3,14 @@ import {
   type Option,
   type NormalizedOption,
   type Candle,
-  // type Context,
+  type Context,
 } from "./interfaces.js";
 import setOptions from "./option.set.js";
 import setCandleDate from "./candle.setDate.js";
 import setCandleHalving from "./candle.setHalving.js";
 import setCandleTime from "./candle.setTime.js";
-// import setCandlePrice from "./candle.setPrice.js";
-// import setCandlePriceLimit from "./candle.setPriceLimit.js";
+import setCandlePrice from "./candle.setPrice.js";
+import setCandlePriceLimit from "./candle.setPriceLimit.js";
 // import setCandleVolume from "./candle.setVolume.js";
 // import setCandleVwap from "./candle.setVwap.js";
 // import setCandleRsi from "./candle.setRsi.js";
@@ -25,7 +25,7 @@ import setCandleTime from "./candle.setTime.js";
 // import setCandleTrend from "./candle.setTrend.js";
 // import setCandleAnchor from "./candle.setAnchor.js";
 // import normalizeCandles from "./candles.normalize.js";
-// import * as utils from "@nameer/utils";
+import * as utils from "@nameer/utils";
 
 /**
  * Processes a series of raw OHLCV data points into enriched candles with technical indicators.
@@ -41,19 +41,19 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
   const candles: Candle[] = [];
 
-  // const ctx: Context = {
-  //   obv: 0,
-  //   obvValue: 0,
-  //   vwapPV: 0,
-  //   vwapVolume: 0,
-  //   window: {},
-  //   rsi: {},
-  //   ema: {},
-  //   macd: {},
-  //   color: {},
-  //   prevTopBottom: [],
-  //   trend: {},
-  // };
+  const ctx: Context = {
+    obv: 0,
+    obvValue: 0,
+    vwapPV: 0,
+    vwapVolume: 0,
+    window: {},
+    rsi: {},
+    ema: {},
+    macd: {},
+    color: {},
+    prevTopBottom: [],
+    trend: {},
+  };
 
   let index = 0;
 
@@ -66,8 +66,10 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     setCandleTime(opt, candle);
 
-    // setCandlePrice(opt, curr, candle, ctx);
-    // setCandlePriceLimit(opt, candle);
+    setCandlePrice(opt, curr, candle, ctx);
+
+    setCandlePriceLimit(opt, candle);
+
     // setCandleVolume(opt, curr, candle, ctx);
     // setCandleVwap(opt, candle, ctx);
     // setCandleRsi(opt, candle, ctx);
@@ -81,10 +83,14 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
     // setCandlePressure(opt, candle);
     // setCandleTrend(opt, candle, ctx);
     // setCandleAnchor(opt, candle);
-    // // Track previous close for next candle's calculations
-    // ctx.prevClose = candle.priceClose; // leverage-adjusted or regular
-    // const regClose = curr[opt.close]; // always raw/regular
-    // if (utils.isNumberValid(regClose)) ctx.prevClose2 = regClose;
+
+    // Track previous close for next candle's calculations
+    ctx.prevClose = candle.priceClose; // leverage-adjusted or regular
+
+    const regClose = curr[opt.close]; // always raw/regular
+
+    if (utils.isNumberValid(regClose)) ctx.prevClose2 = regClose;
+
     // // Fold normalize copy into main loop for efficiency
     // if (opt.normalize.length) {
     //   for (const key of opt.normalize) candle[`${key}N`] = candle[key];

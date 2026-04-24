@@ -1,24 +1,24 @@
-// import { Option, Candle } from "./interfaces";
-// import simpul from "simpul";
+import { type NormalizedOption, type Candle } from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandlePriceLimit(option: Option, candle: Candle) {
-//   if (option.limit !== true) return;
+function setCandlePriceLimit(opt: NormalizedOption, candle: Candle): void {
+  if (opt.limit !== true) return;
 
-//   candle.priceLimit = function makePriceLimit(limit, threshold = 0) {
-//     if (candle.priceOpen === undefined) return;
+  candle.priceLimit = function makePriceLimit(limit, threshold = 0) {
+    if (!utils.isNumberValid(candle.priceOpen)) return;
 
-//     let priceLimit = candle.priceOpen + candle.priceOpen * (limit / 100);
+    let priceLimit = candle.priceOpen + candle.priceOpen * (limit / 100);
 
-//     priceLimit = simpul.math.num(priceLimit)!;
+    priceLimit = utils.math.num(priceLimit)!;
 
-//     const isHit =
-//       candle.priceHigh !== undefined &&
-//       candle.priceLow !== undefined &&
-//       priceLimit + threshold <= candle.priceHigh &&
-//       priceLimit - threshold >= candle.priceLow;
+    const isHit =
+      utils.isNumberValid(candle.priceHigh) &&
+      utils.isNumberValid(candle.priceLow) &&
+      priceLimit + threshold <= candle.priceHigh &&
+      priceLimit - threshold >= candle.priceLow;
 
-//     return { priceLimit, isHit };
-//   };
-// }
+    return { priceLimit, isHit };
+  };
+}
 
-// export default setCandlePriceLimit;
+export default setCandlePriceLimit;

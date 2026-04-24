@@ -7,5 +7,8 @@ console.log(
     date: true,
     halving: true,
     time: true,
-  }).slice(-100),
+    price: true,
+    // leverage: 2,
+    limit: true,
+  }),
 );
