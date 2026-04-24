@@ -1,103 +1,101 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+  type Color,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandleColor(
-//   option: Option,
-//   candle: Candle,
-//   ctx: Context,
-//   period?: number,
-// ) {
-//   if (
-//     option.color !== true ||
-//     candle.priceClose === undefined ||
-//     candle.priceOpen === undefined
-//   )
-//     return;
+function setCandleColor(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+  period?: number,
+): void {
+  if (
+    opt.color !== true ||
+    candle.priceClose === undefined ||
+    candle.priceOpen === undefined
+  ) {
+    return;
+  }
 
-//   const color =
-//     candle.priceClose > candle.priceOpen
-//       ? "green"
-//       : candle.priceClose < candle.priceOpen
-//       ? "red"
-//       : "gray";
+  const color: Color =
+    candle.priceClose > candle.priceOpen
+      ? "green"
+      : candle.priceClose < candle.priceOpen
+      ? "red"
+      : "gray";
 
-//   const winKey = `color${period || ""}`;
+  const winKey = `color${period ?? ""}`;
 
-//   ctx.color[winKey] ??= [];
+  ctx.color[winKey] ??= [];
 
-//   const colorWin = ctx.color[winKey];
+  ctx.color[winKey].push([color, candle.volume]);
 
-//   colorWin.push([color, candle.volume]);
+  if (period !== undefined && ctx.color[winKey].length > period) {
+    ctx.color[winKey].shift();
+  }
 
-//   if (period !== undefined && colorWin.length > period) colorWin.shift();
+  let greenCount = 0;
+  let redCount = 0;
+  let grayCount = 0;
+  let total = 0;
 
-//   const colorCount = { green: 0, red: 0, gray: 0, total: 0 };
+  let greenVolume = 0;
+  let redVolume = 0;
+  let grayVolume = 0;
+  let totalVolume = 0;
 
-//   const colorVolume = { green: 0, red: 0, gray: 0, total: 0 };
+  for (const [c, vol] of ctx.color[winKey]) {
+    if (c === "green") greenCount++;
+    else if (c === "red") redCount++;
+    else grayCount++;
+    total++;
+    if (vol !== undefined) {
+      if (c === "green") greenVolume += vol;
+      else if (c === "red") redVolume += vol;
+      else grayVolume += vol;
+      totalVolume += vol;
+    }
+  }
 
-//   for (const item of colorWin) {
-//     ++colorCount[item[0]];
-//     ++colorCount.total;
-//     if (item[1] !== undefined) {
-//       colorVolume[item[0]] += item[1];
-//       colorVolume.total += item[1];
-//     }
-//   }
+  if (period !== undefined) {
+    candle[`sma${period}ColorGreen`] = utils.math.percent(greenCount, total);
 
-//   if (period !== undefined) {
-//     candle[`sma${period}ColorGreen`] = simpul.math.percent(
-//       colorCount.green,
-//       colorCount.total,
-//     );
+    candle[`sma${period}ColorRed`] = utils.math.percent(redCount, total);
 
-//     candle[`sma${period}ColorRed`] = simpul.math.percent(
-//       colorCount.red,
-//       colorCount.total,
-//     );
+    candle[`sma${period}ColorGray`] = utils.math.percent(grayCount, total);
 
-//     candle[`sma${period}ColorGray`] = simpul.math.percent(
-//       colorCount.gray,
-//       colorCount.total,
-//     );
+    candle[`sma${period}ColorVolumeGreen`] = utils.math.percent(
+      greenVolume,
+      totalVolume,
+    );
 
-//     candle[`sma${period}ColorVolumeGreen`] = simpul.math.percent(
-//       colorVolume.green,
-//       colorVolume.total,
-//     );
+    candle[`sma${period}ColorVolumeRed`] = utils.math.percent(
+      redVolume,
+      totalVolume,
+    );
 
-//     candle[`sma${period}ColorVolumeRed`] = simpul.math.percent(
-//       colorVolume.red,
-//       colorVolume.total,
-//     );
+    candle[`sma${period}ColorVolumeGray`] = utils.math.percent(
+      grayVolume,
+      totalVolume,
+    );
+  } else {
+    candle.color = color;
 
-//     candle[`sma${period}ColorVolumeGray`] = simpul.math.percent(
-//       colorVolume.gray,
-//       colorVolume.total,
-//     );
-//   } else {
-//     candle.color = color;
+    candle.colorGreen = utils.math.percent(greenCount, total);
 
-//     candle.colorGreen = simpul.math.percent(colorCount.green, colorCount.total);
+    candle.colorRed = utils.math.percent(redCount, total);
 
-//     candle.colorRed = simpul.math.percent(colorCount.red, colorCount.total);
+    candle.colorGray = utils.math.percent(grayCount, total);
 
-//     candle.colorGray = simpul.math.percent(colorCount.gray, colorCount.total);
+    candle.colorVolumeGreen = utils.math.percent(greenVolume, totalVolume);
 
-//     candle.colorVolumeGreen = simpul.math.percent(
-//       colorVolume.green,
-//       colorVolume.total,
-//     );
+    candle.colorVolumeRed = utils.math.percent(redVolume, totalVolume);
 
-//     candle.colorVolumeRed = simpul.math.percent(
-//       colorVolume.red,
-//       colorVolume.total,
-//     );
+    candle.colorVolumeGray = utils.math.percent(grayVolume, totalVolume);
+  }
+}
 
-//     candle.colorVolumeGray = simpul.math.percent(
-//       colorVolume.gray,
-//       colorVolume.total,
-//     );
-//   }
-// }
-
-// export default setCandleColor;
+export default setCandleColor;

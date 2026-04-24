@@ -11,8 +11,9 @@ const options = {
   // obv: true,
   // vwap: true,
   // rsi: true,
-  ema: true,
-  macd: true,
+  // ema: true,
+  // macd: true,
+  color: true,
 };
 
-console.log(pricehistory(data, options).slice(-10));
+console.log(pricehistory(data, options).slice(-5));
