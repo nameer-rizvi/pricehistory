@@ -1,18 +1,10 @@
-// import { Option, Candle } from "./interfaces";
-// import simpul from "simpul";
+import { type NormalizedOption, type Candle } from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function normalizeCandles(option: Option, candles: Candle[]) {
-//   if (option.normalize === undefined) return;
+function normalizeCandles(opt: NormalizedOption, candles: Candle[]): void {
+  for (const key of opt.normalize) {
+    utils.rescale(candles, `${key}N`, [0, 100]);
+  }
+}
 
-//   for (const candle of candles) {
-//     for (const key of option.normalize) {
-//       candle[`${key}N`] = candle[key];
-//     }
-//   }
-
-//   for (const key of option.normalize) {
-//     simpul.rescale(candles, `${key}N`, [0, 100]);
-//   }
-// }
-
-// export default normalizeCandles;
+export default normalizeCandles;

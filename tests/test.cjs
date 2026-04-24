@@ -16,6 +16,12 @@ const options = {
   // color: true,
   // sma: [10],
   // signal: ["sma10PriceClose", "sma10Vwap"],
+  // candlestick: true,
+  // phase: true,
+  // pressure: true,
+  // trend: true,
+  // anchor: true,
+  // normalize: ["volume", "volumeValue"],
 };
 
 console.log(pricehistory(data, options).slice(-5));

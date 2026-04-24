@@ -1,12 +1,9 @@
-// import { Option, Candle } from "./interfaces";
-// import simpul from "simpul";
+import { type NormalizedOption, type Candle } from "./interfaces.js";
 
-// function setCandleAnchor(option: Option, candle: Candle) {
-//   if (simpul.isArray(option.anchor)) {
-//     for (let i = 0; i < option.anchor.length; i++) {
-//       candle[`anchor${i}`] = option.anchor[i];
-//     }
-//   }
-// }
+function setCandleAnchor(opt: NormalizedOption, candle: Candle): void {
+  for (let i = 0; i < opt.anchor.length; i++) {
+    candle[`anchor${opt.anchor[i]}`] = opt.anchor[i];
+  }
+}
 
-// export default setCandleAnchor;
+export default setCandleAnchor;

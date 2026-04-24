@@ -1,100 +1,120 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandleCandlestick(option: Option, candle: Candle, ctx: Context) {
-//   if (
-//     option.candlestick !== true ||
-//     candle.priceOpen === undefined ||
-//     candle.priceHigh === undefined ||
-//     candle.priceLow === undefined ||
-//     candle.priceClose === undefined
-//   )
-//     return;
+function setCandleCandlestick(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+): void {
+  if (
+    opt.candlestick !== true ||
+    candle.priceOpen === undefined ||
+    candle.priceHigh === undefined ||
+    candle.priceLow === undefined ||
+    candle.priceClose === undefined
+  ) {
+    return;
+  }
 
-//   const wickTop = candle.priceHigh;
+  const wickTop = candle.priceHigh;
 
-//   const bodyTop = Math.max(candle.priceOpen, candle.priceClose);
+  const bodyTop = Math.max(candle.priceOpen, candle.priceClose);
 
-//   const bodyBottom = Math.min(candle.priceOpen, candle.priceClose);
+  const bodyBottom = Math.min(candle.priceOpen, candle.priceClose);
 
-//   const wickBottom = candle.priceLow;
+  const wickBottom = candle.priceLow;
 
-//   const size = simpul.math.change.num(wickBottom, wickTop);
+  const size = utils.math.change.num(wickBottom, wickTop);
 
-//   const upper = simpul.math.change.num(bodyTop, wickTop);
+  const upper = utils.math.change.num(bodyTop, wickTop);
 
-//   const body = simpul.math.change.num(bodyBottom, bodyTop);
+  const body = utils.math.change.num(bodyBottom, bodyTop);
 
-//   const lower = simpul.math.change.num(wickBottom, bodyBottom);
+  const lower = utils.math.change.num(wickBottom, bodyBottom);
 
-//   candle.candlestickTop = option.gap === "body" ? bodyTop : wickTop;
+  const isBody = opt.gap === "body";
 
-//   candle.candlestickBottom = option.gap === "body" ? bodyBottom : wickBottom;
+  candle.candlestickTop = isBody ? bodyTop : wickTop;
 
-//   candle.candlestickSize = size;
+  candle.candlestickBottom = isBody ? bodyBottom : wickBottom;
 
-//   candle.candlestickUpper = simpul.math.percent(upper, size);
+  candle.candlestickSize = size;
 
-//   candle.candlestickBody = simpul.math.percent(body, size);
+  candle.candlestickUpper = utils.math.percent(upper, size);
 
-//   candle.candlestickLower = simpul.math.percent(lower, size);
+  candle.candlestickBody = utils.math.percent(body, size);
 
-//   if (ctx.prevTopBottom.length === 2) {
-//     candle.candlestickIsGapUp = ctx.prevTopBottom[0] < candle.candlestickBottom;
+  candle.candlestickLower = utils.math.percent(lower, size);
 
-//     candle.candlestickIsGapDown = ctx.prevTopBottom[1] > candle.candlestickTop;
+  if (ctx.prevTopBottom.length === 2) {
+    candle.candlestickIsGapUp = ctx.prevTopBottom[0] < candle.candlestickBottom;
 
-//     if (candle.candlestickIsGapUp) {
-//       candle.candlestickGapSize = simpul.math.change.percent(
-//         ctx.prevTopBottom[0],
-//         candle.candlestickBottom,
-//       );
-//       candle.candlestickGapTarget = ctx.prevTopBottom[0];
-//     } else if (candle.candlestickIsGapDown) {
-//       candle.candlestickGapSize = simpul.math.change.percent(
-//         candle.candlestickTop,
-//         ctx.prevTopBottom[1],
-//       );
-//       candle.candlestickGapTarget = ctx.prevTopBottom[1];
-//     } else {
-//       candle.candlestickGapSize = null;
-//       candle.candlestickGapTarget = null;
-//     }
-//   }
+    candle.candlestickIsGapDown = ctx.prevTopBottom[1] > candle.candlestickTop;
 
-//   candle.candlestickIsBullish = candle.priceClose > candle.priceOpen;
+    if (candle.candlestickIsGapUp) {
+      candle.candlestickGapSize = utils.math.change.percent(
+        ctx.prevTopBottom[0],
 
-//   candle.candlestickIsBearish = candle.priceClose < candle.priceOpen;
+        candle.candlestickBottom,
+      );
 
-//   candle.candlestickIsNeutral = candle.priceClose === candle.priceOpen;
+      candle.candlestickGapTarget = ctx.prevTopBottom[0];
+    } else if (candle.candlestickIsGapDown) {
+      candle.candlestickGapSize = utils.math.change.percent(
+        candle.candlestickTop,
 
-//   candle.candlestickIsHammer = candle.candlestickLower! >= 50;
+        ctx.prevTopBottom[1],
+      );
 
-//   candle.candlestickIsHammerGreen =
-//     candle.candlestickIsHammer && candle.candlestickIsBullish;
+      candle.candlestickGapTarget = ctx.prevTopBottom[1];
+    } else {
+      candle.candlestickGapSize = null;
 
-//   candle.candlestickIsInvertedHammer = candle.candlestickUpper! >= 50;
+      candle.candlestickGapTarget = null;
+    }
+  }
 
-//   candle.candlestickIsInvertedHammerRed =
-//     candle.candlestickIsInvertedHammer && candle.candlestickIsBearish;
+  candle.candlestickIsBullish = candle.priceClose > candle.priceOpen;
 
-//   candle.candlestickIsMarubozu = candle.candlestickBody! >= 80;
+  candle.candlestickIsBearish = candle.priceClose < candle.priceOpen;
 
-//   candle.candlestickIsMarubozuGreen =
-//     candle.candlestickIsMarubozu && candle.candlestickIsBullish;
+  candle.candlestickIsNeutral = candle.priceClose === candle.priceOpen;
 
-//   candle.candlestickIsMarubozuRed =
-//     candle.candlestickIsMarubozu && candle.candlestickIsBearish;
+  const candlestickUpper = candle.candlestickUpper ?? 0;
 
-//   candle.isRejectionTop =
-//     candle.candlestickUpper! > candle.candlestickLower! &&
-//     candle.candlestickUpper! >= 15;
+  const candlestickLower = candle.candlestickLower ?? 0;
 
-//   candle.isRejectionBottom =
-//     candle.candlestickLower! > candle.candlestickUpper! &&
-//     candle.candlestickLower! >= 15;
+  const candlestickBody = candle.candlestickBody ?? 0;
 
-//   ctx.prevTopBottom = [candle.candlestickTop, candle.candlestickBottom];
-// }
+  candle.candlestickIsHammer = candlestickLower >= 50;
 
-// export default setCandleCandlestick;
+  candle.candlestickIsHammerGreen =
+    candle.candlestickIsHammer && candle.candlestickIsBullish;
+
+  candle.candlestickIsInvertedHammer = candlestickUpper >= 50;
+
+  candle.candlestickIsInvertedHammerRed =
+    candle.candlestickIsInvertedHammer && candle.candlestickIsBearish;
+
+  candle.candlestickIsMarubozu = candlestickBody >= 80;
+
+  candle.candlestickIsMarubozuGreen =
+    candle.candlestickIsMarubozu && candle.candlestickIsBullish;
+
+  candle.candlestickIsMarubozuRed =
+    candle.candlestickIsMarubozu && candle.candlestickIsBearish;
+
+  candle.isRejectionTop =
+    candlestickUpper > candlestickLower && candlestickUpper >= 15;
+
+  candle.isRejectionBottom =
+    candlestickLower > candlestickUpper && candlestickLower >= 15;
+
+  ctx.prevTopBottom = [candle.candlestickTop, candle.candlestickBottom];
+}
+
+export default setCandleCandlestick;

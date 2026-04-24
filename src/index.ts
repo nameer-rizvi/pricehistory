@@ -19,12 +19,12 @@ import setCandleMacd from "./candle.setMacd.js";
 import setCandleColor from "./candle.setColor.js";
 import setCandleSma from "./candle.setSma.js";
 import setCandleSignal from "./candle.setSignal.js";
-// import setCandleCandlestick from "./candle.setCandlestick.js";
-// import setCandlePhase from "./candle.setPhase.js";
-// import setCandlePressure from "./candle.setPressure.js";
-// import setCandleTrend from "./candle.setTrend.js";
-// import setCandleAnchor from "./candle.setAnchor.js";
-// import normalizeCandles from "./candles.normalize.js";
+import setCandleCandlestick from "./candle.setCandlestick.js";
+import setCandlePhase from "./candle.setPhase.js";
+import setCandlePressure from "./candle.setPressure.js";
+import setCandleTrend from "./candle.setTrend.js";
+import setCandleAnchor from "./candle.setAnchor.js";
+import normalizeCandles from "./candles.normalize.js";
 import * as utils from "@nameer/utils";
 
 /**
@@ -86,11 +86,15 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     setCandleSignal(opt, candle, ctx);
 
-    // setCandleCandlestick(opt, candle, ctx);
-    // setCandlePhase(opt, candle);
-    // setCandlePressure(opt, candle);
-    // setCandleTrend(opt, candle, ctx);
-    // setCandleAnchor(opt, candle);
+    setCandleCandlestick(opt, candle, ctx);
+
+    setCandlePhase(opt, candle);
+
+    setCandlePressure(opt, candle);
+
+    setCandleTrend(opt, candle, ctx);
+
+    setCandleAnchor(opt, candle);
 
     // Track previous close for next candle's calculations
 
@@ -100,14 +104,16 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     if (utils.isNumber(regClose)) ctx.prevClose2 = regClose;
 
-    // // Fold normalize copy into main loop for efficiency
-    // if (opt.normalize.length) {
-    //   for (const key of opt.normalize) candle[`${key}N`] = candle[key];
-    // }
+    // Fold normalize copy into main loop for efficiency
+
+    if (opt.normalize.length) {
+      for (const key of opt.normalize) candle[`${key}N`] = candle[key];
+    }
 
     candles.push(candle);
   }
-  // normalizeCandles(opt, candles);
+
+  normalizeCandles(opt, candles);
 
   return candles;
 }

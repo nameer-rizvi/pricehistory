@@ -1,39 +1,47 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
-// import { trendKeys } from "./keys";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
+import { trendKeys } from "./keys.js";
 
-// function setCandleTrend(option: Option, candle: Candle, ctx: Context) {
-//   if (option.trend !== true) return;
+function setCandleTrend(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+): void {
+  if (opt.trend !== true) return;
 
-//   for (const key in candle) {
-//     if (!simpul.isNumber(candle[key])) continue;
+  for (const key in candle) {
+    const value = candle[key];
 
-//     for (const trendKey of trendKeys) {
-//       if (key.startsWith(trendKey)) {
-//         const prev = ctx.trend[key] || [];
+    if (value === undefined || typeof value !== "number") continue;
 
-//         const curr = candle[key];
+    for (const trendKey of trendKeys) {
+      if (!key.startsWith(trendKey)) continue;
 
-//         const symbol = simpul.math.change.symbol(prev[0], curr);
+      const prev = ctx.trend[key];
 
-//         const direction = symbol?.[0] || 0;
+      const symbol = utils.math.change.symbol(prev?.[0], value);
 
-//         const startAt = direction !== prev[1] ? candle.index : prev[2];
+      const direction = symbol?.[0] ?? 0;
 
-//         const length = direction !== prev[1] ? 1 : prev[3] + 1;
+      const startAt = direction !== prev?.[1] ? candle.index : prev[2];
 
-//         candle[`${key}Trend`] = symbol;
+      const length = direction !== prev?.[1] ? 1 : prev[3] + 1;
 
-//         candle[`${key}TrendStartAt`] = startAt;
+      candle[`${key}Trend`] = symbol;
 
-//         candle[`${key}TrendLength`] = length;
+      candle[`${key}TrendStartAt`] = startAt;
 
-//         ctx.trend[key] = [curr, direction, startAt, length];
+      candle[`${key}TrendLength`] = length;
 
-//         break;
-//       }
-//     }
-//   }
-// }
+      ctx.trend[key] = [value, direction, startAt, length];
 
-// export default setCandleTrend;
+      break;
+    }
+  }
+}
+
+export default setCandleTrend;
