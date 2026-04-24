@@ -1,56 +1,63 @@
-// import { Option, Candle } from "./interfaces";
-// import simpul from "simpul";
+import { type NormalizedOption, type Candle } from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// const halvingDates = [
-//   new Date("2009-01-03"), // genesis
-//   new Date("2012-11-28"),
-//   new Date("2016-07-09"),
-//   new Date("2020-05-11"),
-//   new Date("2024-04-19"),
-// ];
+const halvingDates = [
+  new Date("2009-01-03"), // genesis
+  new Date("2012-11-28"),
+  new Date("2016-07-09"),
+  new Date("2020-05-11"),
+  new Date("2024-04-19"),
+];
 
-// let lastHalvingDate = halvingDates[halvingDates.length - 1];
+const averageDuration =
+  (halvingDates[halvingDates.length - 1].getTime() -
+    halvingDates[0].getTime()) /
+  (halvingDates.length - 1);
 
-// const averageDuration =
-//   (lastHalvingDate.getTime() - halvingDates[0].getTime()) /
-//   (halvingDates.length - 1);
+const now = Date.now();
 
-// while (lastHalvingDate < new Date()) {
-//   halvingDates.push(new Date(lastHalvingDate.getTime() + averageDuration));
-//   lastHalvingDate = halvingDates[halvingDates.length - 1];
-// }
+while (halvingDates[halvingDates.length - 1].getTime() < now) {
+  halvingDates.push(
+    new Date(halvingDates[halvingDates.length - 1].getTime() + averageDuration),
+  );
+}
 
-// const YEAR_MS = 1000 * 60 * 60 * 24 * 365.25;
+// Cache timestamps for fast comparison in hot loop
+const halvingTimestamps = halvingDates.map((d) => d.getTime());
 
-// function setCandleHalving(option: Option, candle: Candle) {
-//   if (option.halving !== true || candle.date === undefined) return;
+const firstTimestamp = halvingTimestamps[0];
 
-//   const t = candle.date.getTime();
+const lastTimestamp = halvingTimestamps[halvingTimestamps.length - 1];
 
-//   if (t < halvingDates[0].getTime() || t > lastHalvingDate.getTime()) return;
+function setCandleHalving(opt: NormalizedOption, candle: Candle): void {
+  if (opt.halving !== true || candle.date === undefined) return;
 
-//   let epoch = 0;
+  const t = candle.date.getTime();
 
-//   for (let i = 0; i < halvingDates.length - 1; i++) {
-//     if (t >= halvingDates[i].getTime() && t < halvingDates[i + 1].getTime()) {
-//       epoch = i;
-//       break;
-//     }
-//   }
+  if (t < firstTimestamp || t > lastTimestamp) return;
 
-//   const halvingDate = halvingDates[epoch];
+  let epoch = 0;
 
-//   const elapsed = t - halvingDate.getTime();
+  for (let i = 0; i < halvingTimestamps.length - 1; i++) {
+    if (t >= halvingTimestamps[i] && t < halvingTimestamps[i + 1]) {
+      epoch = i;
+      break;
+    }
+  }
 
-//   const duration = halvingDates[epoch + 1].getTime() - halvingDate.getTime();
+  const halvingStart = halvingTimestamps[epoch];
 
-//   candle.halvingDate = halvingDate;
+  const elapsed = t - halvingStart;
 
-//   candle.halvingEpoch = epoch;
+  const duration = halvingTimestamps[epoch + 1] - halvingStart;
 
-//   candle.halvingYear = Math.floor(elapsed / YEAR_MS) + 1;
+  candle.halvingDate = halvingDates[epoch];
 
-//   candle.halvingProgress = simpul.math.num((elapsed / duration) * 100);
-// }
+  candle.halvingEpoch = epoch;
 
-// export default setCandleHalving;
+  candle.halvingYear = Math.floor(elapsed / utils.date.MS_PER_YEAR) + 1;
+
+  candle.halvingProgress = utils.math.num((elapsed / duration) * 100);
+}
+
+export default setCandleHalving;
