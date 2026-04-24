@@ -1,35 +1,41 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
-// import { smaKeys } from "./keys";
-// import setCandleVwap from "./candle.setVwap";
-// import setCandleColor from "./candle.setColor";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
+import { smaKeys } from "./keys.js";
+import setCandleVwap from "./candle.setVwap.js";
+import setCandleColor from "./candle.setColor.js";
 
-// function setCandleSma(option: Option, candle: Candle, ctx: Context) {
-//   if (!simpul.isArray(option.sma)) return;
+function setCandleSma(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+): void {
+  for (const period of opt.sma) {
+    for (const smaKey of smaKeys) {
+      const value = candle[smaKey];
 
-//   for (const period of option.sma) {
-//     for (const smaKey of smaKeys) {
-//       if (!simpul.isNumber(candle[smaKey])) continue;
+      if (value === undefined) continue;
 
-//       const winKey = `sma${period}${smaKey}`;
+      const winKey = `sma${period}${smaKey}`;
 
-//       ctx.window[winKey] ??= [];
+      ctx.window[winKey] ??= [];
 
-//       const win = ctx.window[winKey];
+      ctx.window[winKey].push(value as number);
 
-//       win.push(candle[smaKey]);
+      if (ctx.window[winKey].length > period) ctx.window[winKey].shift();
 
-//       if (win.length > period) win.shift();
+      candle[`sma${period}${utils.capitalize(smaKey)}`] = utils.math.mean(
+        ctx.window[winKey],
+      );
+    }
 
-//       const smaKeyCap = simpul.capitalize(smaKey);
+    setCandleVwap(opt, candle, ctx, period);
 
-//       candle[`sma${period}${smaKeyCap}`] = simpul.math.mean(win);
-//     }
+    setCandleColor(opt, candle, ctx, period);
+  }
+}
 
-//     setCandleVwap(option, candle, ctx, period);
-
-//     setCandleColor(option, candle, ctx, period);
-//   }
-// }
-
-// export default setCandleSma;
+export default setCandleSma;

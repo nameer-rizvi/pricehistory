@@ -1,36 +1,38 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandleSignal(option: Option, candle: Candle, ctx: Context) {
-//   for (const [anchor, ...compares] of option.signal || []) {
-//     for (const compare of compares) {
-//       const key =
-//         "signal" +
-//         simpul.capitalize(anchor) +
-//         "To" +
-//         simpul.capitalize(compare);
+function setCandleSignal(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+): void {
+  for (const [anchor, ...compares] of opt.signal) {
+    for (const compare of compares) {
+      const key = `signal${utils.capitalize(anchor)}To${utils.capitalize(
+        compare,
+      )}`;
 
-//       candle[key] = simpul.math.change.percent(candle[anchor], candle[compare]);
+      candle[key] = utils.math.change.percent(candle[anchor], candle[compare]);
 
-//       if (!simpul.isArray(option.sma)) continue;
+      for (const period of opt.sma) {
+        const winKey = `signal${period}${key}`;
 
-//       for (const period of option.sma) {
-//         const winKey = `signal${period}${key}`;
+        ctx.window[winKey] ??= [];
 
-//         ctx.window[winKey] ??= [];
+        ctx.window[winKey].push(candle[key] as number);
 
-//         const win = ctx.window[winKey];
+        if (ctx.window[winKey].length > period) ctx.window[winKey].shift();
 
-//         win.push(candle[key]);
+        candle[`sma${period}${utils.capitalize(key)}`] = utils.math.mean(
+          ctx.window[winKey],
+        );
+      }
+    }
+  }
+}
 
-//         if (win.length > period) win.shift();
-
-//         const keyCap = simpul.capitalize(key);
-
-//         candle[`sma${period}${keyCap}`] = simpul.math.mean(win);
-//       }
-//     }
-//   }
-// }
-
-// export default setCandleSignal;
+export default setCandleSignal;

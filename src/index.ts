@@ -17,8 +17,8 @@ import setCandleRsi from "./candle.setRsi.js";
 import setCandleEma from "./candle.setEma.js";
 import setCandleMacd from "./candle.setMacd.js";
 import setCandleColor from "./candle.setColor.js";
-// import setCandleSma from "./candle.setSma.js";
-// import setCandleSignal from "./candle.setSignal.js";
+import setCandleSma from "./candle.setSma.js";
+import setCandleSignal from "./candle.setSignal.js";
 // import setCandleCandlestick from "./candle.setCandlestick.js";
 // import setCandlePhase from "./candle.setPhase.js";
 // import setCandlePressure from "./candle.setPressure.js";
@@ -82,8 +82,10 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     setCandleColor(opt, candle, ctx);
 
-    // setCandleSma(opt, candle, ctx);
-    // setCandleSignal(opt, candle, ctx);
+    setCandleSma(opt, candle, ctx);
+
+    setCandleSignal(opt, candle, ctx);
+
     // setCandleCandlestick(opt, candle, ctx);
     // setCandlePhase(opt, candle);
     // setCandlePressure(opt, candle);

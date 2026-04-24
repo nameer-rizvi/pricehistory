@@ -13,7 +13,9 @@ const options = {
   // rsi: true,
   // ema: true,
   // macd: true,
-  color: true,
+  // color: true,
+  // sma: [10],
+  // signal: ["sma10PriceClose", "sma10Vwap"],
 };
 
 console.log(pricehistory(data, options).slice(-5));
