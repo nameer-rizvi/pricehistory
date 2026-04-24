@@ -1,50 +1,54 @@
-// import { Option, Candle } from "./interfaces";
+import { type NormalizedOption, type Candle } from "./interfaces.js";
 
-// const premarketStart = 4 * 60; // 4:00 AM
+const PREMARKET_START = 4 * 60; // 4:00 AM
 
-// const regularStart = 9 * 60 + 30; // 9:30 AM
+const REGULAR_START = 9 * 60 + 30; // 9:30 AM
 
-// const regularEnd = 16 * 60; // 4:00 PM
+const REGULAR_END = 16 * 60; // 4:00 PM
 
-// const postmarketEnd = 20 * 60; // 8:00 PM
+const POSTMARKET_END = 20 * 60; // 8:00 PM
 
-// const options = {
-//   timeZone: "America/New_York",
-//   hour12: false,
-// };
+// Cache formatter instances for performance in hot loop
+const hourFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  hour12: false,
+  hour: "2-digit",
+});
 
-// function setCandleTime(option: Option, candle: Candle) {
-//   if (option.time !== true || candle.date === undefined) return;
+const minuteFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  hour12: false,
+  minute: "2-digit",
+});
 
-//   candle.timeHour = candle.date.getHours();
+function setCandleTime(opt: NormalizedOption, candle: Candle): void {
+  if (opt.time !== true || candle.date === undefined) return;
 
-//   candle.timeHourQuarter = Math.floor(candle.date.getMinutes() / 15) + 1;
+  candle.timeHour = candle.date.getHours();
 
-//   candle.timeMinute = candle.date.getMinutes();
+  candle.timeHourQuarter = Math.floor(candle.date.getMinutes() / 15) + 1;
 
-//   const hours = parseInt(
-//     candle.date.toLocaleString("en-US", { ...options, hour: "2-digit" }),
-//   );
+  candle.timeMinute = candle.date.getMinutes();
 
-//   const minutes = parseInt(
-//     candle.date.toLocaleString("en-US", { ...options, minute: "2-digit" }),
-//   );
+  const hours = parseInt(hourFormatter.format(candle.date));
 
-//   const totalMinutes = hours * 60 + minutes;
+  const minutes = parseInt(minuteFormatter.format(candle.date));
 
-//   candle.timeIsPremarket =
-//     totalMinutes >= premarketStart && totalMinutes < regularStart;
+  const totalMinutes = hours * 60 + minutes;
 
-//   candle.timeIsIntraday =
-//     totalMinutes >= regularStart && totalMinutes < regularEnd;
+  candle.timeIsPremarket =
+    totalMinutes >= PREMARKET_START && totalMinutes < REGULAR_START;
 
-//   candle.timeIsPostmarket =
-//     totalMinutes >= regularEnd && totalMinutes <= postmarketEnd;
+  candle.timeIsIntraday =
+    totalMinutes >= REGULAR_START && totalMinutes < REGULAR_END;
 
-//   candle.timeIsDark =
-//     !candle.timeIsPremarket &&
-//     !candle.timeIsIntraday &&
-//     !candle.timeIsPostmarket;
-// }
+  candle.timeIsPostmarket =
+    totalMinutes >= REGULAR_END && totalMinutes < POSTMARKET_END;
 
-// export default setCandleTime;
+  candle.timeIsDark =
+    !candle.timeIsPremarket &&
+    !candle.timeIsIntraday &&
+    !candle.timeIsPostmarket;
+}
+
+export default setCandleTime;

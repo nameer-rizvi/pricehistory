@@ -8,7 +8,7 @@ import {
 import setOptions from "./option.set.js";
 import setCandleDate from "./candle.setDate.js";
 import setCandleHalving from "./candle.setHalving.js";
-// import setCandleTime from "./candle.setTime.js";
+import setCandleTime from "./candle.setTime.js";
 // import setCandlePrice from "./candle.setPrice.js";
 // import setCandlePriceLimit from "./candle.setPriceLimit.js";
 // import setCandleVolume from "./candle.setVolume.js";
@@ -64,7 +64,8 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     setCandleHalving(opt, candle);
 
-    // setCandleTime(opt, candle);
+    setCandleTime(opt, candle);
+
     // setCandlePrice(opt, curr, candle, ctx);
     // setCandlePriceLimit(opt, candle);
     // setCandleVolume(opt, curr, candle, ctx);
