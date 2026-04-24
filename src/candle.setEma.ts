@@ -1,48 +1,58 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandleEma(option: Option, candle: Candle, ctx: Context) {
-//   if (!simpul.isArray(option.ema)) return;
+function setCandleEma(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+): void {
+  if (candle.priceClose === undefined) return;
 
-//   for (const period of option.ema) {
-//     const winKey = `ema${period}`;
+  for (const period of opt.ema) {
+    const winKey = `ema${period}`;
 
-//     ctx.window[winKey] ??= [];
+    ctx.window[winKey] ??= [];
 
-//     const win = ctx.window[winKey];
+    ctx.window[winKey].push(candle.priceClose);
 
-//     win.push(candle.priceClose!);
+    if (ctx.window[winKey].length > period) ctx.window[winKey].shift();
 
-//     if (win.length > period) win.shift();
+    if (ctx.window[winKey].length < period) continue;
 
-//     if (win.length < period) continue;
+    ctx.ema[period] ??= {};
 
-//     ctx.ema[period] ??= {};
+    if (ctx.ema[period].initialized !== true) {
+      const sma = utils.math.mean(ctx.window[winKey]);
 
-//     if (ctx.ema[period].initialized !== true && win.length === period) {
-//       const sma = simpul.math.mean(win)!;
+      if (sma === undefined) continue;
 
-//       candle[`ema${period}`] = simpul.math.num(sma);
+      candle[`ema${period}`] = utils.math.num(sma);
 
-//       ctx.ema[period].prev = sma;
+      ctx.ema[period].prev = sma;
 
-//       ctx.ema[period].initialized = true;
+      ctx.ema[period].initialized = true;
 
-//       continue;
-//     }
+      delete ctx.window[winKey];
 
-//     const prevEma = ctx.ema[period].prev;
+      continue;
+    }
 
-//     if (prevEma === undefined) continue;
+    if (ctx.ema[period].prev === undefined) continue;
 
-//     const multiplier = 2 / (period + 1);
+    const multiplier = 2 / (period + 1);
 
-//     const ema = (candle.priceClose! - prevEma) * multiplier + prevEma;
+    const ema =
+      (candle.priceClose - ctx.ema[period].prev) * multiplier +
+      ctx.ema[period].prev;
 
-//     candle[`ema${period}`] = simpul.math.num(ema);
+    candle[`ema${period}`] = utils.math.num(ema);
 
-//     ctx.ema[period].prev = ema;
-//   }
-// }
+    ctx.ema[period].prev = ema;
+  }
+}
 
-// export default setCandleEma;
+export default setCandleEma;

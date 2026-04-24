@@ -11,11 +11,11 @@ import setCandleHalving from "./candle.setHalving.js";
 import setCandleTime from "./candle.setTime.js";
 import setCandlePrice from "./candle.setPrice.js";
 import setCandlePriceLimit from "./candle.setPriceLimit.js";
-// import setCandleVolume from "./candle.setVolume.js";
-// import setCandleVwap from "./candle.setVwap.js";
-// import setCandleRsi from "./candle.setRsi.js";
-// import setCandleEma from "./candle.setEma.js";
-// import setCandleMacd from "./candle.setMacd.js";
+import setCandleVolume from "./candle.setVolume.js";
+import setCandleVwap from "./candle.setVwap.js";
+import setCandleRsi from "./candle.setRsi.js";
+import setCandleEma from "./candle.setEma.js";
+import setCandleMacd from "./candle.setMacd.js";
 // import setCandleColor from "./candle.setColor.js";
 // import setCandleSma from "./candle.setSma.js";
 // import setCandleSignal from "./candle.setSignal.js";
@@ -70,11 +70,16 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     setCandlePriceLimit(opt, candle);
 
-    // setCandleVolume(opt, curr, candle, ctx);
-    // setCandleVwap(opt, candle, ctx);
-    // setCandleRsi(opt, candle, ctx);
-    // setCandleEma(opt, candle, ctx);
-    // setCandleMacd(opt, candle, ctx);
+    setCandleVolume(opt, curr, candle, ctx);
+
+    setCandleVwap(opt, candle, ctx);
+
+    setCandleRsi(opt, candle, ctx);
+
+    setCandleEma(opt, candle, ctx);
+
+    setCandleMacd(opt, candle, ctx);
+
     // setCandleColor(opt, candle, ctx);
     // setCandleSma(opt, candle, ctx);
     // setCandleSignal(opt, candle, ctx);

@@ -1,85 +1,98 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandleRsi(option: Option, candle: Candle, ctx: Context) {
-//   if (
-//     !simpul.isNumber(option.rsi) ||
-//     candle.priceClose === undefined ||
-//     ctx.prevClose === undefined
-//   )
-//     return;
+function setCandleRsi(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+): void {
+  if (
+    opt.rsi === false ||
+    candle.priceClose === undefined ||
+    ctx.prevClose === undefined
+  ) {
+    return;
+  }
 
-//   const period = option.rsi;
+  const period = opt.rsi;
 
-//   const change = candle.priceClose - ctx.prevClose;
+  const change = candle.priceClose - ctx.prevClose;
 
-//   const gain = change > 0 ? change : 0;
+  const gain = change > 0 ? change : 0;
 
-//   const loss = change < 0 ? Math.abs(change) : 0;
+  const loss = change < 0 ? -change : 0;
 
-//   const gainWinKey = `rsi${period}Gain`;
+  const gainWinKey = `rsi${period}Gain`;
 
-//   const lossWinKey = `rsi${period}Loss`;
+  const lossWinKey = `rsi${period}Loss`;
 
-//   ctx.window[gainWinKey] ??= [];
+  ctx.window[gainWinKey] ??= [];
 
-//   ctx.window[lossWinKey] ??= [];
+  ctx.window[lossWinKey] ??= [];
 
-//   const gainWin = ctx.window[gainWinKey];
+  ctx.window[gainWinKey].push(gain);
 
-//   const lossWin = ctx.window[lossWinKey];
+  ctx.window[lossWinKey].push(loss);
 
-//   gainWin.push(gain);
+  if (ctx.window[gainWinKey].length > period) ctx.window[gainWinKey].shift();
 
-//   lossWin.push(loss);
+  if (ctx.window[lossWinKey].length > period) ctx.window[lossWinKey].shift();
 
-//   if (gainWin.length > period) gainWin.shift();
+  if (ctx.window[gainWinKey].length < period) return;
 
-//   if (lossWin.length > period) lossWin.shift();
+  if (ctx.rsi.initialized !== true) {
+    const avgGain = utils.math.mean(ctx.window[gainWinKey]);
 
-//   if (gainWin.length < period) return;
+    const avgLoss = utils.math.mean(ctx.window[lossWinKey]);
 
-//   if (ctx.rsi.initialized !== true && gainWin.length === period) {
-//     const avgGain = simpul.math.mean(gainWin);
+    if (avgGain === undefined || avgLoss === undefined) return;
 
-//     const avgLoss = simpul.math.mean(lossWin);
+    candle.rsi = utils.math.num(
+      avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss),
+    );
 
-//     const rsi = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain! / avgLoss!);
+    candle.averageGain = avgGain;
 
-//     candle.rsi = simpul.math.num(rsi);
+    candle.averageLoss = avgLoss;
 
-//     candle.averageGain = avgGain;
+    ctx.rsi.initialized = true;
 
-//     candle.averageLoss = avgLoss;
+    ctx.rsi.prevAvgGain = avgGain;
 
-//     ctx.rsi.initialized = true;
+    ctx.rsi.prevAvgLoss = avgLoss;
 
-//     ctx.rsi.prevAvgGain = avgGain;
+    // Free window memory — no longer needed after seed
 
-//     ctx.rsi.prevAvgLoss = avgLoss;
+    delete ctx.window[gainWinKey];
 
-//     return;
-//   }
+    delete ctx.window[lossWinKey];
 
-//   const prevAvgGain = ctx.rsi.prevAvgGain;
+    return;
+  }
 
-//   const prevAvgLoss = ctx.rsi.prevAvgLoss;
+  if (ctx.rsi.prevAvgGain === undefined || ctx.rsi.prevAvgLoss === undefined) {
+    return;
+  }
 
-//   const avgGain = (prevAvgGain! * (period - 1) + gain) / period;
+  const avgGain = (ctx.rsi.prevAvgGain * (period - 1) + gain) / period;
 
-//   const avgLoss = (prevAvgLoss! * (period - 1) + loss) / period;
+  const avgLoss = (ctx.rsi.prevAvgLoss * (period - 1) + loss) / period;
 
-//   const rsi = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  const rsi = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
 
-//   candle.rsi = simpul.math.num(rsi);
+  candle.rsi = utils.math.num(rsi);
 
-//   candle.averageGain = simpul.math.num(avgGain);
+  candle.averageGain = utils.math.num(avgGain);
 
-//   candle.averageLoss = simpul.math.num(avgLoss);
+  candle.averageLoss = utils.math.num(avgLoss);
 
-//   ctx.rsi.prevAvgGain = avgGain;
+  ctx.rsi.prevAvgGain = avgGain;
 
-//   ctx.rsi.prevAvgLoss = avgLoss;
-// }
+  ctx.rsi.prevAvgLoss = avgLoss;
+}
 
-// export default setCandleRsi;
+export default setCandleRsi;

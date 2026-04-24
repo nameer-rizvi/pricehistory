@@ -7,8 +7,12 @@ const options = {
   // time: true,
   // price: true,
   // leverage: 2,
-  limit: true,
+  // limit: true,
   // obv: true,
+  // vwap: true,
+  // rsi: true,
+  ema: true,
+  macd: true,
 };
 
-console.log(pricehistory(data, options));
+console.log(pricehistory(data, options).slice(-10));

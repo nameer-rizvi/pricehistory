@@ -119,7 +119,8 @@ export interface Context {
   window: Record<string, number[]>;
   rsi: { initialized?: boolean; prevAvgGain?: number; prevAvgLoss?: number };
   ema: Record<string, { initialized?: boolean; prev?: number }>;
-  macd: { initialized?: boolean; prev?: number };
+  macd: { initialized?: boolean; prev?: number; count?: number };
+  // macd: { initialized?: boolean; prev?: number };
   color: Record<string, [Color, number | undefined][]>;
   prevTopBottom: [] | [number, number];
   trend: Record<string, [number, number, number, number]>;

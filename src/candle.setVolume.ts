@@ -20,16 +20,17 @@ function setCandleVolume(
 
   const priceForValue = candle.priceMean ?? candle.priceClose;
 
-  if (utils.isNumber(priceForValue)) {
+  if (priceForValue !== undefined) {
     candle.volumeValue = Math.round(volume * priceForValue);
   }
 
   if (
     opt.obv !== true ||
-    !utils.isNumber(candle.priceOpen) ||
-    !utils.isNumber(candle.priceClose)
-  )
+    candle.priceOpen === undefined ||
+    candle.priceClose === undefined
+  ) {
     return;
+  }
 
   const volumeValue = candle.volumeValue ?? 0;
 
@@ -42,6 +43,7 @@ function setCandleVolume(
   }
 
   candle.obv = ctx.obv;
+
   candle.obvValue = ctx.obvValue;
 }
 

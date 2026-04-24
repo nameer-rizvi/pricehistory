@@ -1,64 +1,68 @@
-// import { Option, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type NormalizedOption,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandleMacd(option: Option, candle: Candle, ctx: Context) {
-//   if (!(simpul.isArray(option.macd) && option.macd.length === 3)) return;
+function setCandleMacd(
+  opt: NormalizedOption,
+  candle: Candle,
+  ctx: Context,
+): void {
+  if (opt.macd === false) return;
 
-//   const fast = candle[`ema${option.macd[0]}`];
+  const fast = candle[`ema${opt.macd[0]}`];
 
-//   const slow = candle[`ema${option.macd[1]}`];
+  const slow = candle[`ema${opt.macd[1]}`];
 
-//   if (fast === undefined || slow === undefined) return;
+  if (fast === undefined || slow === undefined) return;
 
-//   const macdLine = fast - slow;
+  const macdLine = (fast as number) - (slow as number);
 
-//   candle.macd = simpul.math.num(macdLine);
+  candle.macd = utils.math.num(macdLine);
 
-//   const signal = option.macd[2];
+  const signal = opt.macd[2];
 
-//   const winKey = `macd${signal}`;
+  const winKey = `macd${signal}`;
 
-//   ctx.window[winKey] ??= [];
+  ctx.window[winKey] ??= [];
 
-//   const sigWin = ctx.window[winKey];
+  ctx.window[winKey].push(macdLine);
 
-//   sigWin.push(macdLine);
+  if (ctx.window[winKey].length > signal) ctx.window[winKey].shift();
 
-//   if (sigWin.length > signal) sigWin.shift();
+  if (ctx.window[winKey].length < signal) return;
 
-//   if (sigWin.length < signal) return;
+  if (ctx.macd.initialized !== true) {
+    const sma = utils.math.mean(ctx.window[winKey]);
 
-//   let signalLine: number | null = null;
+    if (sma === undefined) return;
 
-//   if (ctx.macd.initialized !== true && sigWin.length === signal) {
-//     const sma = simpul.math.mean(sigWin)!;
+    ctx.macd.prev = sma;
 
-//     ctx.macd.prev = sma;
+    ctx.macd.initialized = true;
 
-//     ctx.macd.initialized = true;
+    candle.macdSignal = utils.math.num(sma);
 
-//     candle.macdSignal = simpul.math.num(sma);
+    candle.macdHist = utils.math.num(macdLine - sma);
 
-//     signalLine = sma;
-//   } else {
-//     const prev = ctx.macd.prev;
+    delete ctx.window[winKey];
 
-//     if (prev === undefined) return;
+    return;
+  }
 
-//     const multiplier = 2 / (signal + 1);
+  if (ctx.macd.prev === undefined) return;
 
-//     const emaSignal = (macdLine - prev) * multiplier + prev;
+  const multiplier = 2 / (signal + 1);
 
-//     ctx.macd.prev = emaSignal;
+  const emaSignal = (macdLine - ctx.macd.prev) * multiplier + ctx.macd.prev;
 
-//     candle.macdSignal = simpul.math.num(emaSignal);
+  ctx.macd.prev = emaSignal;
 
-//     signalLine = emaSignal;
-//   }
+  candle.macdSignal = utils.math.num(emaSignal);
 
-//   if (signalLine !== null) {
-//     candle.macdHist = simpul.math.num(macdLine - signalLine);
-//   }
-// }
+  candle.macdHist = utils.math.num(macdLine - emaSignal);
+}
 
-// export default setCandleMacd;
+export default setCandleMacd;
