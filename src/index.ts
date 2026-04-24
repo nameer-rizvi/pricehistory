@@ -1,71 +1,98 @@
-// import { DataPoint, Option, Candle, Context } from "./interfaces";
-// import setOptions from "./option.set";
-// import setCandleDate from "./candle.setDate";
-// import setCandleHalving from "./candle.setHalving";
-// import setCandleTime from "./candle.setTime";
-// import setCandlePrice from "./candle.setPrice";
-// import setCandlePriceLimit from "./candle.setPriceLimit";
-// import setCandleVolume from "./candle.setVolume";
-// import setCandleVwap from "./candle.setVwap";
-// import setCandleRsi from "./candle.setRsi";
-// import setCandleEma from "./candle.setEma";
-// import setCandleMacd from "./candle.setMacd";
-// import setCandleColor from "./candle.setColor";
-// import setCandleSma from "./candle.setSma";
-// import setCandleSignal from "./candle.setSignal";
-// import setCandleCandlestick from "./candle.setCandlestick";
-// import setCandlePhase from "./candle.setPhase";
-// import setCandlePressure from "./candle.setPressure";
-// import setCandleTrend from "./candle.setTrend";
-// import setCandleAnchor from "./candle.setAnchor";
-// import normalizeCandles from "./candles.normalize";
-// import simpul from "simpul";
+import {
+  type DataPoint,
+  type Option,
+  type NormalizedOption,
+  type Candle,
+  // type Context,
+} from "./interfaces.js";
+import setOptions from "./option.set.js";
+import setCandleDate from "./candle.setDate.js";
+// import setCandleHalving from "./candle.setHalving.js";
+// import setCandleTime from "./candle.setTime.js";
+// import setCandlePrice from "./candle.setPrice.js";
+// import setCandlePriceLimit from "./candle.setPriceLimit.js";
+// import setCandleVolume from "./candle.setVolume.js";
+// import setCandleVwap from "./candle.setVwap.js";
+// import setCandleRsi from "./candle.setRsi.js";
+// import setCandleEma from "./candle.setEma.js";
+// import setCandleMacd from "./candle.setMacd.js";
+// import setCandleColor from "./candle.setColor.js";
+// import setCandleSma from "./candle.setSma.js";
+// import setCandleSignal from "./candle.setSignal.js";
+// import setCandleCandlestick from "./candle.setCandlestick.js";
+// import setCandlePhase from "./candle.setPhase.js";
+// import setCandlePressure from "./candle.setPressure.js";
+// import setCandleTrend from "./candle.setTrend.js";
+// import setCandleAnchor from "./candle.setAnchor.js";
+// import normalizeCandles from "./candles.normalize.js";
+// import * as utils from "@nameer/utils";
 
-// function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
-//   if (!series?.length) return [];
-//   const candles: Candle[] = [];
-//   const ctx: Context = {
-//     obv: 0,
-//     obvValue: 0,
-//     vwapPV: 0,
-//     vwapVolume: 0,
-//     window: {},
-//     rsi: {},
-//     ema: {},
-//     macd: {},
-//     color: {},
-//     prevTopBottom: [],
-//     trend: {},
-//   };
-//   setOptions(option, series);
-//   let index = 0;
-//   for (const curr of series) {
-//     const candle: Candle = { index: index++ };
-//     setCandleDate(option, curr, candle);
-//     setCandleHalving(option, candle);
-//     setCandleTime(option, candle);
-//     setCandlePrice(option, curr, candle, ctx);
-//     setCandlePriceLimit(option, candle);
-//     setCandleVolume(option, curr, candle, ctx);
-//     setCandleVwap(option, candle, ctx);
-//     setCandleRsi(option, candle, ctx);
-//     setCandleEma(option, candle, ctx);
-//     setCandleMacd(option, candle, ctx);
-//     setCandleColor(option, candle, ctx);
-//     setCandleSma(option, candle, ctx);
-//     setCandleSignal(option, candle, ctx);
-//     setCandleCandlestick(option, candle, ctx);
-//     setCandlePhase(option, candle);
-//     setCandlePressure(option, candle);
-//     setCandleTrend(option, candle, ctx);
-//     setCandleAnchor(option, candle);
-//     ctx.prevClose = candle.priceClose; // leverage or regular
-//     const regClose = option.close && curr[option.close]; // regular
-//     if (simpul.isNumber(regClose)) ctx.prevClose2 = regClose;
-//     candles.push(candle);
-//   }
-//   normalizeCandles(option, candles);
-//   return candles;
-// }
+/**
+ * Processes a series of raw OHLCV data points into enriched candles with technical indicators.
+ * @example
+ * pricehistory(series, { price: true, rsi: true, ema: true, macd: true })
+ * pricehistory(series, { price: true, color: true, candlestick: true })
+ * pricehistory(series, { open: "o", high: "h", low: "l", close: "c", volume: "v" })
+ */
+function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
+  if (!series.length) return [];
 
-// export default pricehistory;
+  const opt: NormalizedOption = setOptions(option, series);
+
+  const candles: Candle[] = [];
+
+  // const ctx: Context = {
+  //   obv: 0,
+  //   obvValue: 0,
+  //   vwapPV: 0,
+  //   vwapVolume: 0,
+  //   window: {},
+  //   rsi: {},
+  //   ema: {},
+  //   macd: {},
+  //   color: {},
+  //   prevTopBottom: [],
+  //   trend: {},
+  // };
+
+  let index = 0;
+
+  for (const curr of series) {
+    const candle: Candle = { index: index++ };
+
+    setCandleDate(opt, curr, candle);
+
+    // setCandleHalving(opt, candle);
+    // setCandleTime(opt, candle);
+    // setCandlePrice(opt, curr, candle, ctx);
+    // setCandlePriceLimit(opt, candle);
+    // setCandleVolume(opt, curr, candle, ctx);
+    // setCandleVwap(opt, candle, ctx);
+    // setCandleRsi(opt, candle, ctx);
+    // setCandleEma(opt, candle, ctx);
+    // setCandleMacd(opt, candle, ctx);
+    // setCandleColor(opt, candle, ctx);
+    // setCandleSma(opt, candle, ctx);
+    // setCandleSignal(opt, candle, ctx);
+    // setCandleCandlestick(opt, candle, ctx);
+    // setCandlePhase(opt, candle);
+    // setCandlePressure(opt, candle);
+    // setCandleTrend(opt, candle, ctx);
+    // setCandleAnchor(opt, candle);
+    // // Track previous close for next candle's calculations
+    // ctx.prevClose = candle.priceClose; // leverage-adjusted or regular
+    // const regClose = curr[opt.close]; // always raw/regular
+    // if (utils.isNumberValid(regClose)) ctx.prevClose2 = regClose;
+    // // Fold normalize copy into main loop for efficiency
+    // if (opt.normalize.length) {
+    //   for (const key of opt.normalize) candle[`${key}N`] = candle[key];
+    // }
+
+    candles.push(candle);
+  }
+  // normalizeCandles(opt, candles);
+
+  return candles;
+}
+
+export default pricehistory;

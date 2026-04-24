@@ -1,31 +1,41 @@
-// import { Option, DataPoint, Candle } from "./interfaces";
+import {
+  type NormalizedOption,
+  type DataPoint,
+  type Candle,
+} from "./interfaces.js";
 
-// function setCandleDate(option: Option, curr: DataPoint, candle: Candle) {
-//   if (option.datetime === undefined) return;
+function setCandleDate(
+  opt: NormalizedOption,
+  curr: DataPoint,
+  candle: Candle,
+): void {
+  const raw = curr[opt.datetime];
 
-//   const date = new Date(curr[option.datetime]);
+  if (raw === undefined) return;
 
-//   candle.date = date;
+  const date = new Date(raw);
 
-//   candle.dateString = date.toLocaleString();
+  candle.date = date;
 
-//   if (option.date !== true) return;
+  candle.dateString = date.toLocaleString();
 
-//   candle.dateYear = date.getFullYear();
+  if (opt.date !== true) return;
 
-//   candle.dateQuarter = Math.floor((date.getMonth() + 3) / 3);
+  candle.dateYear = date.getFullYear();
 
-//   candle.dateMonth = date.getMonth() + 1;
+  candle.dateQuarter = Math.floor((date.getMonth() + 3) / 3);
 
-//   candle.dateMonthName = date.toLocaleString("default", { month: "long" });
+  candle.dateMonth = date.getMonth() + 1;
 
-//   candle.dateDate = date.getDate();
+  candle.dateMonthName = date.toLocaleString("default", { month: "long" });
 
-//   candle.dateWeekday = date.getDay() + 1;
+  candle.dateDate = date.getDate();
 
-//   candle.dateWeekdayName = date.toLocaleDateString("default", {
-//     weekday: "long",
-//   });
-// }
+  candle.dateWeekday = date.getDay() + 1;
 
-// export default setCandleDate;
+  candle.dateWeekdayName = date.toLocaleDateString("default", {
+    weekday: "long",
+  });
+}
+
+export default setCandleDate;
