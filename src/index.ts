@@ -85,11 +85,12 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
     // setCandleAnchor(opt, candle);
 
     // Track previous close for next candle's calculations
+
     ctx.prevClose = candle.priceClose; // leverage-adjusted or regular
 
     const regClose = curr[opt.close]; // always raw/regular
 
-    if (utils.isNumberValid(regClose)) ctx.prevClose2 = regClose;
+    if (utils.isNumber(regClose)) ctx.prevClose2 = regClose;
 
     // // Fold normalize copy into main loop for efficiency
     // if (opt.normalize.length) {

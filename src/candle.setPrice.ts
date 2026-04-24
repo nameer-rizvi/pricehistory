@@ -20,30 +20,30 @@ function setCandlePrice(
 
   const close = curr[opt.close];
 
-  if (utils.isNumberValid(open)) candle.priceOpen = open;
+  if (utils.isNumber(open)) candle.priceOpen = open;
 
-  if (utils.isNumberValid(high)) candle.priceHigh = high;
+  if (utils.isNumber(high)) candle.priceHigh = high;
 
-  if (utils.isNumberValid(low)) candle.priceLow = low;
+  if (utils.isNumber(low)) candle.priceLow = low;
 
-  if (utils.isNumberValid(close)) candle.priceClose = close;
+  if (utils.isNumber(close)) candle.priceClose = close;
 
   const prevClose = ctx.prevClose;
 
-  if (opt.leverage !== undefined && utils.isNumberValid(open)) {
+  if (opt.leverage !== undefined && utils.isNumber(open)) {
     const levOpen = calcLeverage(opt.leverage, ctx.prevClose2, open, prevClose);
 
     candle.priceOpen = levOpen;
 
-    if (utils.isNumberValid(high)) {
+    if (utils.isNumber(high)) {
       candle.priceHigh = calcLeverage(opt.leverage, open, high, levOpen);
     }
 
-    if (utils.isNumberValid(low)) {
+    if (utils.isNumber(low)) {
       candle.priceLow = calcLeverage(opt.leverage, open, low, levOpen);
     }
 
-    if (utils.isNumberValid(close)) {
+    if (utils.isNumber(close)) {
       const levClose = calcLeverage(opt.leverage, open, close, levOpen);
       if (levClose !== undefined) candle.priceClose = levClose;
     }
@@ -91,11 +91,7 @@ function calcLeverage(
   curr?: number,
   mark?: number,
 ): number | undefined {
-  if (
-    !utils.isNumberValid(mark) ||
-    !utils.isNumberValid(prev) ||
-    !utils.isNumberValid(curr)
-  )
+  if (!utils.isNumber(mark) || !utils.isNumber(prev) || !utils.isNumber(curr))
     return;
   const change = (utils.math.change.percent(prev, curr)! / 100) * lev;
   return utils.math.num(mark * (1 + change));

@@ -46,9 +46,9 @@ function setCandleTime(opt: NormalizedOption, candle: Candle): void {
     totalMinutes >= REGULAR_END && totalMinutes < POSTMARKET_END;
 
   candle.timeIsDark =
-    !candle.timeIsPremarket &&
-    !candle.timeIsIntraday &&
-    !candle.timeIsPostmarket;
+    candle.timeIsPremarket === false &&
+    candle.timeIsIntraday === false &&
+    candle.timeIsPostmarket === false;
 }
 
 export default setCandleTime;

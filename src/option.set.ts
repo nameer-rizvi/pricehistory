@@ -26,7 +26,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
   if (normalized.basePrice === undefined) {
     for (const curr of series) {
       const open = curr[normalized.open];
-      if (utils.isNumberValid(open)) {
+      if (utils.isNumber(open)) {
         normalized.basePrice = open;
         break;
       }
@@ -52,7 +52,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
   if (option.ema === true) {
     normalized.ema = [5, 8, 13]; // The Fibonacci Trio
   } else if (utils.isArray(normalized.ema)) {
-    normalized.ema = normalized.ema.filter(utils.isNumberValid);
+    normalized.ema = normalized.ema.filter(utils.isNumber);
   } else {
     normalized.ema = [];
   }
@@ -66,7 +66,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
   }
 
   if (utils.isArray(normalized.macd)) {
-    const macd = normalized.macd.filter(utils.isNumberValid);
+    const macd = normalized.macd.filter(utils.isNumber);
     if (macd.length === 3) {
       normalized.macd = [macd[0], macd[1], macd[2]];
       normalized.ema = [...new Set([...normalized.ema, macd[0], macd[1]])];
@@ -84,7 +84,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
   if (option.sma === true) {
     normalized.sma = [10, 50]; // Personal preference
   } else if (utils.isArray(normalized.sma)) {
-    normalized.sma = normalized.sma.filter(utils.isNumberValid);
+    normalized.sma = normalized.sma.filter(utils.isNumber);
   } else {
     normalized.sma = [];
   }
@@ -147,7 +147,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
   }
 
   if (utils.isArray(normalized.anchor)) {
-    normalized.anchor = normalized.anchor.filter(utils.isNumberValid);
+    normalized.anchor = normalized.anchor.filter(utils.isNumber);
   } else {
     normalized.anchor = [];
   }

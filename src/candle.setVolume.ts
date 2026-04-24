@@ -1,42 +1,48 @@
-// import { Option, DataPoint, Candle, Context } from "./interfaces";
-// import simpul from "simpul";
+import {
+  type NormalizedOption,
+  type DataPoint,
+  type Candle,
+  type Context,
+} from "./interfaces.js";
+import * as utils from "@nameer/utils";
 
-// function setCandleVolume(
-//   option: Option,
-//   curr: DataPoint,
-//   candle: Candle,
-//   ctx: Context,
-// ) {
-//   const volume = option.volume && curr[option.volume];
+function setCandleVolume(
+  opt: NormalizedOption,
+  curr: DataPoint,
+  candle: Candle,
+  ctx: Context,
+): void {
+  const volume = curr[opt.volume];
 
-//   if (!simpul.isNumber(volume)) return;
+  if (!utils.isNumber(volume)) return;
 
-//   candle.volume = volume;
+  candle.volume = volume;
 
-//   if (candle.priceMean !== undefined) {
-//     candle.volumeValue = Math.round(volume * candle.priceMean);
-//   } else if (candle.priceClose !== undefined) {
-//     candle.volumeValue = Math.round(volume * candle.priceClose);
-//   }
+  const priceForValue = candle.priceMean ?? candle.priceClose;
 
-//   if (
-//     option.obv !== true ||
-//     candle.priceOpen === undefined ||
-//     candle.priceClose === undefined
-//   )
-//     return;
+  if (utils.isNumber(priceForValue)) {
+    candle.volumeValue = Math.round(volume * priceForValue);
+  }
 
-//   if (candle.priceClose > candle.priceOpen) {
-//     ctx.obv += candle.volume;
-//     ctx.obvValue += candle.volumeValue || 0;
-//   } else if (candle.priceClose < candle.priceOpen) {
-//     ctx.obv -= candle.volume;
-//     ctx.obvValue -= candle.volumeValue || 0;
-//   }
+  if (
+    opt.obv !== true ||
+    !utils.isNumber(candle.priceOpen) ||
+    !utils.isNumber(candle.priceClose)
+  )
+    return;
 
-//   candle.obv = ctx.obv;
+  const volumeValue = candle.volumeValue ?? 0;
 
-//   candle.obvValue = ctx.obvValue;
-// }
+  if (candle.priceClose > candle.priceOpen) {
+    ctx.obv += volume;
+    ctx.obvValue += volumeValue;
+  } else if (candle.priceClose < candle.priceOpen) {
+    ctx.obv -= volume;
+    ctx.obvValue -= volumeValue;
+  }
 
-// export default setCandleVolume;
+  candle.obv = ctx.obv;
+  candle.obvValue = ctx.obvValue;
+}
+
+export default setCandleVolume;

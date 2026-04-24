@@ -23,6 +23,7 @@ while (halvingDates[halvingDates.length - 1].getTime() < now) {
 }
 
 // Cache timestamps for fast comparison in hot loop
+
 const halvingTimestamps = halvingDates.map((d) => d.getTime());
 
 const firstTimestamp = halvingTimestamps[0];

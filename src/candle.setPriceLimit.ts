@@ -5,15 +5,15 @@ function setCandlePriceLimit(opt: NormalizedOption, candle: Candle): void {
   if (opt.limit !== true) return;
 
   candle.priceLimit = function makePriceLimit(limit, threshold = 0) {
-    if (!utils.isNumberValid(candle.priceOpen)) return;
+    if (!utils.isNumber(candle.priceOpen)) return;
 
     let priceLimit = candle.priceOpen + candle.priceOpen * (limit / 100);
 
     priceLimit = utils.math.num(priceLimit)!;
 
     const isHit =
-      utils.isNumberValid(candle.priceHigh) &&
-      utils.isNumberValid(candle.priceLow) &&
+      utils.isNumber(candle.priceHigh) &&
+      utils.isNumber(candle.priceLow) &&
       priceLimit + threshold <= candle.priceHigh &&
       priceLimit - threshold >= candle.priceLow;
 
