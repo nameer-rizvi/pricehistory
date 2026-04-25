@@ -38,13 +38,19 @@ function setCandleColor(
   }
 
   let greenCount = 0;
+
   let redCount = 0;
+
   let grayCount = 0;
+
   let total = 0;
 
   let greenVolume = 0;
+
   let redVolume = 0;
+
   let grayVolume = 0;
+
   let totalVolume = 0;
 
   for (const [c, vol] of ctx.color[winKey]) {

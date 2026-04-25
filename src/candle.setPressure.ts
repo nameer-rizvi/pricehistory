@@ -1,4 +1,8 @@
-import { type NormalizedOption, type Candle } from "./interfaces.js";
+import {
+  type NormalizedOption,
+  type Candle,
+  type NumberOrUndefined,
+} from "./interfaces.js";
 import * as utils from "@nameer/utils";
 
 function setCandlePressure(opt: NormalizedOption, candle: Candle): void {
@@ -38,17 +42,17 @@ function setCandlePressure(opt: NormalizedOption, candle: Candle): void {
 
   if (candlestickUpper === undefined || candlestickLower === undefined) return;
 
-  const high = candle[`signalSma${opt.pressure}PriceCloseToPriceHigh`] as
-    | number
-    | undefined;
+  const high = candle[
+    `signalSma${opt.pressure}PriceCloseToPriceHigh`
+  ] as NumberOrUndefined;
 
-  const low = candle[`signalSma${opt.pressure}PriceCloseToPriceLow`] as
-    | number
-    | undefined;
+  const low = candle[
+    `signalSma${opt.pressure}PriceCloseToPriceLow`
+  ] as NumberOrUndefined;
 
-  const green = candle[`sma${opt.pressure}ColorGreen`] as number | undefined;
+  const green = candle[`sma${opt.pressure}ColorGreen`] as NumberOrUndefined;
 
-  const red = candle[`sma${opt.pressure}ColorRed`] as number | undefined;
+  const red = candle[`sma${opt.pressure}ColorRed`] as NumberOrUndefined;
 
   if (
     high === undefined ||

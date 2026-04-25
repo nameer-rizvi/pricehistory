@@ -65,8 +65,6 @@ function setCandleRsi(
 
     ctx.rsi.prevAvgLoss = avgLoss;
 
-    // Free window memory — no longer needed after seed
-
     delete ctx.window[gainWinKey];
 
     delete ctx.window[lossWinKey];

@@ -184,7 +184,7 @@ When `limit: true` is set, each candle gets a `priceLimit` function for calculat
 ```javascript
 candle.priceLimit(5); // { priceLimit: 345.67, isHit: true }  - 5% above open
 candle.priceLimit(-3); // { priceLimit: 318.52, isHit: false } - 3% below open
-candle.priceLimit(5, 0.5); // with ±0.5 threshold
+candle.priceLimit(5, 0.05); // 5% above open with $0.05 threshold below high and above low (target will not hit if within threshold)
 ```
 
 ## Trend

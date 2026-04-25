@@ -1,11 +1,8 @@
 import { type NormalizedOption, type Candle } from "./interfaces.js";
 
 const PREMARKET_START = 4 * 60; // 4:00 AM
-
 const REGULAR_START = 9 * 60 + 30; // 9:30 AM
-
 const REGULAR_END = 16 * 60; // 4:00 PM
-
 const POSTMARKET_END = 20 * 60; // 8:00 PM
 
 // Cache formatter instances for performance in hot loop

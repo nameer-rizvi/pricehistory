@@ -28,7 +28,7 @@ function setCandleCandlestick(
 
   const wickBottom = candle.priceLow;
 
-  const size = utils.math.change.num(wickBottom, wickTop);
+  const size = candle.priceRange ?? utils.math.change.num(wickBottom, wickTop);
 
   const upper = utils.math.change.num(bodyTop, wickTop);
 
@@ -36,11 +36,11 @@ function setCandleCandlestick(
 
   const lower = utils.math.change.num(wickBottom, bodyBottom);
 
-  const isBody = opt.gap === "body";
+  const isGapBody = opt.gap === "body";
 
-  candle.candlestickTop = isBody ? bodyTop : wickTop;
+  candle.candlestickTop = isGapBody ? bodyTop : wickTop;
 
-  candle.candlestickBottom = isBody ? bodyBottom : wickBottom;
+  candle.candlestickBottom = isGapBody ? bodyBottom : wickBottom;
 
   candle.candlestickSize = size;
 
@@ -58,22 +58,17 @@ function setCandleCandlestick(
     if (candle.candlestickIsGapUp) {
       candle.candlestickGapSize = utils.math.change.percent(
         ctx.prevTopBottom[0],
-
         candle.candlestickBottom,
       );
-
       candle.candlestickGapTarget = ctx.prevTopBottom[0];
     } else if (candle.candlestickIsGapDown) {
       candle.candlestickGapSize = utils.math.change.percent(
         candle.candlestickTop,
-
         ctx.prevTopBottom[1],
       );
-
       candle.candlestickGapTarget = ctx.prevTopBottom[1];
     } else {
       candle.candlestickGapSize = null;
-
       candle.candlestickGapTarget = null;
     }
   }
@@ -90,12 +85,14 @@ function setCandleCandlestick(
 
   const candlestickBody = candle.candlestickBody ?? 0;
 
-  candle.candlestickIsHammer = candlestickLower >= 50;
+  candle.candlestickIsHammer =
+    candlestickLower >= 50 && candlestickBody > candlestickUpper * 2;
 
   candle.candlestickIsHammerGreen =
     candle.candlestickIsHammer && candle.candlestickIsBullish;
 
-  candle.candlestickIsInvertedHammer = candlestickUpper >= 50;
+  candle.candlestickIsInvertedHammer =
+    candlestickUpper >= 50 && candlestickBody > candlestickLower * 2;
 
   candle.candlestickIsInvertedHammerRed =
     candle.candlestickIsInvertedHammer && candle.candlestickIsBearish;
@@ -108,11 +105,11 @@ function setCandleCandlestick(
   candle.candlestickIsMarubozuRed =
     candle.candlestickIsMarubozu && candle.candlestickIsBearish;
 
-  candle.isRejectionTop =
-    candlestickUpper > candlestickLower && candlestickUpper >= 15;
+  candle.candlestickIsRejectionTop =
+    candlestickUpper > candlestickLower * 2 && candlestickUpper >= 15;
 
-  candle.isRejectionBottom =
-    candlestickLower > candlestickUpper && candlestickLower >= 15;
+  candle.candlestickIsRejectionBottom =
+    candlestickLower > candlestickUpper * 2 && candlestickLower >= 15;
 
   ctx.prevTopBottom = [candle.candlestickTop, candle.candlestickBottom];
 }

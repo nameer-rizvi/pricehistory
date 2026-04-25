@@ -2,8 +2,8 @@ import {
   type DataPoint,
   type Option,
   type NormalizedOption,
-  type Candle,
   type Context,
+  type Candle,
 } from "./interfaces.js";
 import setOptions from "./option.set.js";
 import setCandleDate from "./candle.setDate.js";
@@ -23,8 +23,6 @@ import setCandleCandlestick from "./candle.setCandlestick.js";
 import setCandlePhase from "./candle.setPhase.js";
 import setCandlePressure from "./candle.setPressure.js";
 import setCandleTrend from "./candle.setTrend.js";
-import setCandleAnchor from "./candle.setAnchor.js";
-import normalizeCandles from "./candles.normalize.js";
 import * as utils from "@nameer/utils";
 
 /**
@@ -94,8 +92,6 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     setCandleTrend(opt, candle, ctx);
 
-    setCandleAnchor(opt, candle);
-
     // Track previous close for next candle's calculations
 
     ctx.prevClose = candle.priceClose; // leverage-adjusted or regular
@@ -106,14 +102,16 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     // Fold normalize copy into main loop for efficiency
 
-    if (opt.normalize.length) {
-      for (const key of opt.normalize) candle[`${key}N`] = candle[key];
-    }
+    for (const key of opt.normalize) candle[`${key}N`] = candle[key];
+
+    // Add anchor properties
+
+    for (const num of opt.anchor) candle[`anchor${num}`] = num;
 
     candles.push(candle);
   }
 
-  normalizeCandles(opt, candles);
+  for (const key of opt.normalize) utils.rescale(candles, `${key}N`, [0, 100]);
 
   return candles;
 }

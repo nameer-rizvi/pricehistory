@@ -18,10 +18,10 @@ function setCandleVolume(
 
   candle.volume = volume;
 
-  const priceForValue = candle.priceMean ?? candle.priceClose;
+  const price = candle.priceMean ?? candle.priceClose;
 
-  if (priceForValue !== undefined) {
-    candle.volumeValue = Math.round(volume * priceForValue);
+  if (price !== undefined) {
+    candle.volumeValue = Math.round(volume * price);
   }
 
   if (

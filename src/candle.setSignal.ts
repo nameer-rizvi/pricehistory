@@ -10,13 +10,11 @@ function setCandleSignal(
   candle: Candle,
   ctx: Context,
 ): void {
-  for (const [anchor, ...compares] of opt.signal) {
-    for (const compare of compares) {
-      const key = `signal${utils.capitalize(anchor)}To${utils.capitalize(
-        compare,
-      )}`;
+  for (const [anchor, ...keys] of opt.signal) {
+    for (const k of keys) {
+      const key = `signal${utils.capitalize(anchor)}To${utils.capitalize(k)}`;
 
-      candle[key] = utils.math.change.percent(candle[anchor], candle[compare]);
+      candle[key] = utils.math.change.percent(candle[anchor], candle[k]);
 
       for (const period of opt.sma) {
         const winKey = `signal${period}${key}`;

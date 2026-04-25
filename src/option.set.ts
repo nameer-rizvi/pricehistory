@@ -93,11 +93,13 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
    * SIGNAL
    */
 
-  if (utils.isArray(normalized.signal)) {
-    if (normalized.signal.every(utils.isString)) {
-      normalized.signal = [normalized.signal as unknown as string[]];
+  if (utils.isArray(option.signal)) {
+    if (option.signal.every(utils.isString)) {
+      normalized.signal = [option.signal];
     }
-    normalized.signal = normalized.signal.filter(utils.isArrayNonEmpty);
+    normalized.signal = normalized.signal.filter((signal) => {
+      return utils.isArray(signal) && signal.every(utils.isString);
+    });
   } else {
     normalized.signal = [];
   }
@@ -174,11 +176,11 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
 }
 
 function ensureSignal(normalized: NormalizedOption, smaKey: string): void {
-  const isSignal = normalized.signal.some(([anchor, ...compares]) => {
+  const isSignal = normalized.signal.some(([anchor, ...keys]) => {
     return (
       anchor === smaKey &&
-      compares.includes("priceHigh") &&
-      compares.includes("priceLow")
+      keys.includes("priceHigh") &&
+      keys.includes("priceLow")
     );
   });
   if (isSignal !== true) {

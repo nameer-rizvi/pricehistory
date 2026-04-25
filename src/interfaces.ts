@@ -6,12 +6,12 @@ export type Color = "green" | "red" | "gray";
 
 export type DataPoint = Record<string, number | string | Date>;
 
+export type NumberOrUndefined = number | undefined;
+
 export type PriceLimit = (
   limit: number,
   threshold?: number,
 ) => { priceLimit: number; isHit: boolean } | undefined;
-
-export type NumberOrNull = number | null;
 
 /*
  * --> INTERFACES
@@ -86,8 +86,8 @@ export interface Candle {
   candlestickLower?: number;
   candlestickIsGapUp?: boolean;
   candlestickIsGapDown?: boolean;
-  candlestickGapSize?: NumberOrNull;
-  candlestickGapTarget?: NumberOrNull;
+  candlestickGapSize?: number | null;
+  candlestickGapTarget?: number | null;
   candlestickIsBullish?: boolean;
   candlestickIsBearish?: boolean;
   candlestickIsNeutral?: boolean;
@@ -98,9 +98,9 @@ export interface Candle {
   candlestickIsMarubozu?: boolean;
   candlestickIsMarubozuGreen?: boolean;
   candlestickIsMarubozuRed?: boolean;
+  candlestickIsRejectionTop?: boolean;
+  candlestickIsRejectionBottom?: boolean;
   // Pattern
-  isRejectionTop?: boolean;
-  isRejectionBottom?: boolean;
   phaseDistribution?: number;
   phaseAccumulation?: number;
   pressureSelling?: number;
@@ -120,8 +120,7 @@ export interface Context {
   rsi: { initialized?: boolean; prevAvgGain?: number; prevAvgLoss?: number };
   ema: Record<string, { initialized?: boolean; prev?: number }>;
   macd: { initialized?: boolean; prev?: number; count?: number };
-  // macd: { initialized?: boolean; prev?: number };
-  color: Record<string, [Color, number | undefined][]>;
+  color: Record<string, [Color, NumberOrUndefined][]>;
   prevTopBottom: [] | [number, number];
   trend: Record<string, [number, number, number, number]>;
 }
@@ -133,26 +132,28 @@ export interface Option {
   low?: string;
   close?: string;
   volume?: string;
+  // Pass-through options
   date?: boolean;
   halving?: boolean;
   time?: boolean;
-  basePrice?: number;
   leverage?: number;
+  basePrice?: number;
   price?: boolean;
   limit?: boolean;
   obv?: boolean;
   vwap?: boolean;
+  color?: boolean;
+  candlestick?: boolean;
+  gap?: "body" | "wick" | null;
+  trend?: boolean;
+  // Normalized indicators — concrete types after setOptions
   rsi?: boolean | number;
   ema?: boolean | number[];
   macd?: boolean | [number, number, number];
-  color?: boolean;
   sma?: boolean | number[];
   signal?: (string | string[])[];
-  candlestick?: boolean;
-  gap?: "body" | "wick" | null;
   phase?: boolean | number;
   pressure?: boolean | number;
-  trend?: boolean;
   anchor?: boolean | number[];
   normalize?: string[];
 }
@@ -169,8 +170,8 @@ export interface NormalizedOption {
   date?: boolean;
   halving?: boolean;
   time?: boolean;
-  basePrice?: number;
   leverage?: number;
+  basePrice?: number;
   price?: boolean;
   limit?: boolean;
   obv?: boolean;

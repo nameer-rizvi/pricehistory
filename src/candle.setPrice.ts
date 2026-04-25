@@ -3,6 +3,7 @@ import {
   type DataPoint,
   type Candle,
   type Context,
+  type NumberOrUndefined,
 } from "./interfaces.js";
 import * as utils from "@nameer/utils";
 
@@ -90,7 +91,7 @@ function calcLeverage(
   prev?: number,
   curr?: number,
   mark?: number,
-): number | undefined {
+): NumberOrUndefined {
   if (!utils.isNumber(mark) || !utils.isNumber(prev) || !utils.isNumber(curr))
     return;
   const change = (utils.math.change.percent(prev, curr)! / 100) * lev;
