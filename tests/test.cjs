@@ -10,10 +10,11 @@ const options = {
   // limit: true,
   // obv: true,
   // vwap: true,
+  // fibonacci: true,
   // rsi: true,
   // ema: true,
-  macd: true,
-  macdLimit: true,
+  // macd: true,
+  // macdLimit: true,
   // color: true,
   // sma: true,
   // signal: ["priceClose", "priceMean"],
@@ -25,4 +26,4 @@ const options = {
   // normalize: ["volume", "volumeValue"],
 };
 
-console.log(pricehistory(data, options).slice(-5));
+console.log(pricehistory(data, options));

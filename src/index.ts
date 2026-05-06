@@ -13,6 +13,7 @@ import setCandlePrice from "./candle.setPrice.js";
 import setCandlePriceLimit from "./candle.setPriceLimit.js";
 import setCandleVolume from "./candle.setVolume.js";
 import setCandleVwap from "./candle.setVwap.js";
+import setCandleFibonacci from "./candle.setFibonacci.js";
 import setCandleRsi from "./candle.setRsi.js";
 import setCandleEma from "./candle.setEma.js";
 import setCandleMacd from "./candle.setMacd.js";
@@ -45,6 +46,7 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
     obvValue: 0,
     vwapPV: 0,
     vwapVolume: 0,
+    fib: {},
     window: {},
     rsi: {},
     ema: {},
@@ -72,6 +74,8 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
     setCandleVolume(opt, curr, candle, ctx);
 
     setCandleVwap(opt, candle, ctx);
+
+    setCandleFibonacci(opt, candle, ctx);
 
     setCandleRsi(opt, candle, ctx);
 

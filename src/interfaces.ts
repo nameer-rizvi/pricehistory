@@ -62,6 +62,16 @@ export interface Candle {
   obv?: number;
   obvValue?: number;
   vwap?: number;
+  // Fibonacci
+  fibonacci0?: number;
+  fibonacci236?: number;
+  fibonacci382?: number;
+  fibonacci5?: number;
+  fibonacci618?: number;
+  fibonacci786?: number;
+  fibonacci1?: number;
+  fibonacciZone?: string;
+  fibonacciDistance?: number;
   // Indicators
   rsi?: number;
   averageGain?: number;
@@ -117,6 +127,7 @@ export interface Context {
   obvValue: number;
   vwapPV: number;
   vwapVolume: number;
+  fib: { high?: number; low?: number };
   window: Record<string, number[]>;
   rsi: { initialized?: boolean; prevAvgGain?: number; prevAvgLoss?: number };
   ema: Record<string, { initialized?: boolean; prev?: number }>;
@@ -143,6 +154,7 @@ export interface Option {
   limit?: boolean;
   obv?: boolean;
   vwap?: boolean;
+  fibonacci?: boolean;
   color?: boolean;
   candlestick?: boolean;
   gap?: "body" | "wick" | null;
@@ -178,6 +190,7 @@ export interface NormalizedOption {
   limit?: boolean;
   obv?: boolean;
   vwap?: boolean;
+  fibonacci?: boolean;
   color?: boolean;
   candlestick?: boolean;
   gap?: "body" | "wick" | null;
