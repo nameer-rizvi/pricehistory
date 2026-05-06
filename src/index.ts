@@ -13,9 +13,11 @@ import setCandlePrice from "./candle.setPrice.js";
 import setCandlePriceLimit from "./candle.setPriceLimit.js";
 import setCandleVolume from "./candle.setVolume.js";
 import setCandleVwap from "./candle.setVwap.js";
+import setCandleFibonacci from "./candle.setFibonacci.js";
 import setCandleRsi from "./candle.setRsi.js";
 import setCandleEma from "./candle.setEma.js";
 import setCandleMacd from "./candle.setMacd.js";
+import setCandleMacdPivot from "./candle.setMacdPivot.js";
 import setCandleColor from "./candle.setColor.js";
 import setCandleSma from "./candle.setSma.js";
 import setCandleSignal from "./candle.setSignal.js";
@@ -44,6 +46,7 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
     obvValue: 0,
     vwapPV: 0,
     vwapVolume: 0,
+    fib: {},
     window: {},
     rsi: {},
     ema: {},
@@ -72,11 +75,15 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     setCandleVwap(opt, candle, ctx);
 
+    setCandleFibonacci(opt, candle, ctx);
+
     setCandleRsi(opt, candle, ctx);
 
     setCandleEma(opt, candle, ctx);
 
     setCandleMacd(opt, candle, ctx);
+
+    setCandleMacdPivot(opt, candle);
 
     setCandleColor(opt, candle, ctx);
 
