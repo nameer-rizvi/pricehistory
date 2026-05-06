@@ -69,7 +69,7 @@ export interface Candle {
   macd?: number;
   macdSignal?: number;
   macdHist?: number;
-  macdLimit?: number;
+  macdPivot?: number;
   // Color
   color?: Color;
   colorGreen?: number;
@@ -120,12 +120,7 @@ export interface Context {
   window: Record<string, number[]>;
   rsi: { initialized?: boolean; prevAvgGain?: number; prevAvgLoss?: number };
   ema: Record<string, { initialized?: boolean; prev?: number }>;
-  macd: {
-    initialized?: boolean;
-    prev?: number;
-    prevHist?: number;
-    count?: number;
-  };
+  macd: { initialized?: boolean; prev?: number; count?: number };
   color: Record<string, [Color, NumberOrUndefined][]>;
   prevTopBottom: [] | [number, number];
   trend: Record<string, [number, number, number, number]>;
@@ -156,7 +151,7 @@ export interface Option {
   rsi?: boolean | number;
   ema?: boolean | number[];
   macd?: boolean | [number, number, number];
-  macdLimit?: boolean;
+  macdPivot?: boolean;
   sma?: boolean | number[];
   signal?: (string | string[])[];
   phase?: boolean | number;
@@ -191,7 +186,7 @@ export interface NormalizedOption {
   rsi: number | false;
   ema: number[];
   macd: [number, number, number] | false;
-  macdLimit: boolean;
+  macdPivot: boolean;
   sma: number[];
   signal: string[][];
   phase: number | false;

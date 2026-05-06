@@ -77,8 +77,8 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
     normalized.macd = false;
   }
 
-  if (normalized.macdLimit === true) {
-    normalized.macdLimit = normalized.macd !== false;
+  if (normalized.macdPivot === true) {
+    normalized.macdPivot = normalized.macd !== false;
   }
 
   /*
