@@ -42,16 +42,8 @@ function setCandleFibonacci(
 
   if (range === 0) return;
 
-  const prices: number[] = [];
-
   for (const [i, level] of LEVELS.entries()) {
-    const price = utils.math.num(ctx.fib.high - level * range);
-
-    if (utils.isNumber(price)) {
-      candle[KEYS[i]] = price;
-
-      prices.push(price);
-    }
+    candle[KEYS[i]] = utils.math.num(ctx.fib.high - level * range);
   }
 }
 
