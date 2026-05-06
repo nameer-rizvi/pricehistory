@@ -70,8 +70,6 @@ export interface Candle {
   fibonacci618?: number;
   fibonacci786?: number;
   fibonacci1?: number;
-  fibonacciZone?: string;
-  fibonacciDistance?: number;
   // Indicators
   rsi?: number;
   averageGain?: number;

@@ -61,7 +61,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
    * MACD
    */
 
-  if (option.macd === true) {
+  if (option.macd === true || normalized.macdPivot === true) {
     normalized.macd = [12, 26, 9]; // Fast, Slow, Signal
   }
 
