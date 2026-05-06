@@ -1,7 +1,7 @@
 {
   "name": "pricehistory",
   "packageManager": "yarn@4.13.0",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Transforms raw OHLCV series data into enriched candles with technical indicators, pattern recognition, and trend analysis.",
   "author": "Nameer Rizvi (https://github.com/nameer-rizvi)",
   "license": "MIT",
