@@ -16,6 +16,7 @@ import setCandleVwap from "./candle.setVwap.js";
 import setCandleRsi from "./candle.setRsi.js";
 import setCandleEma from "./candle.setEma.js";
 import setCandleMacd from "./candle.setMacd.js";
+import setCandleMacdLimit from "./candle.setMacdLimit.js";
 import setCandleColor from "./candle.setColor.js";
 import setCandleSma from "./candle.setSma.js";
 import setCandleSignal from "./candle.setSignal.js";
@@ -77,6 +78,8 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
     setCandleEma(opt, candle, ctx);
 
     setCandleMacd(opt, candle, ctx);
+
+    setCandleMacdLimit(opt, candle, ctx);
 
     setCandleColor(opt, candle, ctx);
 

@@ -77,6 +77,10 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
     normalized.macd = false;
   }
 
+  if (normalized.macdLimit === true) {
+    normalized.macdLimit = normalized.macd !== false;
+  }
+
   /*
    * SMA
    */

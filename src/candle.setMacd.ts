@@ -47,6 +47,8 @@ function setCandleMacd(
 
     candle.macdHist = utils.math.num(macdLine - sma);
 
+    ctx.macd.prevHist = candle.macdHist;
+
     delete ctx.window[winKey];
 
     return;
@@ -63,6 +65,8 @@ function setCandleMacd(
   candle.macdSignal = utils.math.num(emaSignal);
 
   candle.macdHist = utils.math.num(macdLine - emaSignal);
+
+  ctx.macd.prevHist = candle.macdHist;
 }
 
 export default setCandleMacd;
