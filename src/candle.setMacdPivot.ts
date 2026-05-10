@@ -1,5 +1,5 @@
 import { type NormalizedOption, type Candle } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleMacdPivot(opt: NormalizedOption, candle: Candle): void {
   if (
@@ -42,7 +42,7 @@ function setCandleMacdPivot(opt: NormalizedOption, candle: Candle): void {
 
   const price = (prevMacdHist / (1 - mSignal) + prevMacdSignal - B) / A;
 
-  candle.macdPivot = utils.math.num(price);
+  candle.macdPivot = utilN.math.num(price);
 }
 
 export default setCandleMacdPivot;

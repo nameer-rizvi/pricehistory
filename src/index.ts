@@ -25,7 +25,7 @@ import setCandleCandlestick from "./candle.setCandlestick.js";
 import setCandlePhase from "./candle.setPhase.js";
 import setCandlePressure from "./candle.setPressure.js";
 import setCandleTrend from "./candle.setTrend.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 /**
  * Processes a series of raw OHLCV data points into enriched candles with technical indicators.
@@ -105,7 +105,7 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
 
     const regClose = curr[opt.close]; // always raw/regular
 
-    if (utils.isNumber(regClose)) ctx.prevClose2 = regClose;
+    if (utilN.isNumber(regClose)) ctx.prevClose2 = regClose;
 
     // Fold normalize copy into main loop for efficiency
 
@@ -118,7 +118,7 @@ function pricehistory(series: DataPoint[] = [], option: Option = {}): Candle[] {
     candles.push(candle);
   }
 
-  for (const key of opt.normalize) utils.rescale(candles, `${key}N`, [0, 100]);
+  for (const key of opt.normalize) utilN.rescale(candles, `${key}N`, [0, 100]);
 
   return candles;
 }

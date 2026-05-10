@@ -14,7 +14,7 @@ const options = {
   // rsi: true,
   // ema: true,
   // macd: true,
-  // macdLimit: true,
+  // macdPivot: true,
   // color: true,
   // sma: true,
   // signal: ["priceClose", "priceMean"],

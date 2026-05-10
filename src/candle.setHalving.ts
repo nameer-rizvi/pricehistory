@@ -1,5 +1,5 @@
 import { type NormalizedOption, type Candle } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 const halvingDates = [
   new Date("2009-01-03"), // genesis
@@ -53,9 +53,9 @@ function setCandleHalving(opt: NormalizedOption, candle: Candle): void {
 
   candle.halvingEpoch = epoch;
 
-  candle.halvingYear = Math.floor(elapsed / utils.date.MS_PER_YEAR) + 1;
+  candle.halvingYear = Math.floor(elapsed / utilN.date.MS_PER_YEAR) + 1;
 
-  candle.halvingProgress = utils.math.num((elapsed / duration) * 100);
+  candle.halvingProgress = utilN.math.num((elapsed / duration) * 100);
 }
 
 export default setCandleHalving;

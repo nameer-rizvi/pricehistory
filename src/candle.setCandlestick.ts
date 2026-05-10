@@ -3,7 +3,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleCandlestick(
   opt: NormalizedOption,
@@ -28,13 +28,13 @@ function setCandleCandlestick(
 
   const wickBottom = candle.priceLow;
 
-  const size = candle.priceRange ?? utils.math.change.num(wickBottom, wickTop);
+  const size = candle.priceRange ?? utilN.math.change.num(wickBottom, wickTop);
 
-  const upper = utils.math.change.num(bodyTop, wickTop);
+  const upper = utilN.math.change.num(bodyTop, wickTop);
 
-  const body = utils.math.change.num(bodyBottom, bodyTop);
+  const body = utilN.math.change.num(bodyBottom, bodyTop);
 
-  const lower = utils.math.change.num(wickBottom, bodyBottom);
+  const lower = utilN.math.change.num(wickBottom, bodyBottom);
 
   const isGapBody = opt.gap === "body";
 
@@ -44,11 +44,11 @@ function setCandleCandlestick(
 
   candle.candlestickSize = size;
 
-  candle.candlestickUpper = utils.math.percent(upper, size);
+  candle.candlestickUpper = utilN.math.percent(upper, size);
 
-  candle.candlestickBody = utils.math.percent(body, size);
+  candle.candlestickBody = utilN.math.percent(body, size);
 
-  candle.candlestickLower = utils.math.percent(lower, size);
+  candle.candlestickLower = utilN.math.percent(lower, size);
 
   if (ctx.prevTopBottom.length === 2) {
     candle.candlestickIsGapUp = ctx.prevTopBottom[0] < candle.candlestickBottom;
@@ -56,13 +56,13 @@ function setCandleCandlestick(
     candle.candlestickIsGapDown = ctx.prevTopBottom[1] > candle.candlestickTop;
 
     if (candle.candlestickIsGapUp) {
-      candle.candlestickGapSize = utils.math.change.percent(
+      candle.candlestickGapSize = utilN.math.change.percent(
         ctx.prevTopBottom[0],
         candle.candlestickBottom,
       );
       candle.candlestickGapTarget = ctx.prevTopBottom[0];
     } else if (candle.candlestickIsGapDown) {
-      candle.candlestickGapSize = utils.math.change.percent(
+      candle.candlestickGapSize = utilN.math.change.percent(
         candle.candlestickTop,
         ctx.prevTopBottom[1],
       );

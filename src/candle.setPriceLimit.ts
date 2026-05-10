@@ -1,5 +1,5 @@
 import { type NormalizedOption, type Candle } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandlePriceLimit(opt: NormalizedOption, candle: Candle): void {
   if (opt.limit !== true) return;
@@ -7,7 +7,7 @@ function setCandlePriceLimit(opt: NormalizedOption, candle: Candle): void {
   candle.priceLimit = function makePriceLimit(limit, threshold = 0) {
     if (candle.priceOpen === undefined) return;
 
-    const priceLimit = utils.math.num(
+    const priceLimit = utilN.math.num(
       candle.priceOpen + candle.priceOpen * (limit / 100),
     );
 

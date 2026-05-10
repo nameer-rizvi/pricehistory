@@ -3,7 +3,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleVwap(
   opt: NormalizedOption,
@@ -14,7 +14,7 @@ function setCandleVwap(
   if (opt.vwap !== true || candle.volume === undefined) return;
 
   const typicalPrice =
-    utils.math.mean(candle.priceHigh, candle.priceLow, candle.priceClose) ??
+    utilN.math.mean(candle.priceHigh, candle.priceLow, candle.priceClose) ??
     candle.priceClose;
 
   if (typicalPrice === undefined) return;
@@ -49,13 +49,13 @@ function setCandleVwap(
       vwapVolume += ctx.window[volWinKey][i];
     }
 
-    candle[`sma${period}Vwap`] = utils.math.num(vwapPV / vwapVolume);
+    candle[`sma${period}Vwap`] = utilN.math.num(vwapPV / vwapVolume);
   } else {
     ctx.vwapPV += typicalPrice * candle.volume;
 
     ctx.vwapVolume += candle.volume;
 
-    candle.vwap = utils.math.num(ctx.vwapPV / ctx.vwapVolume);
+    candle.vwap = utilN.math.num(ctx.vwapPV / ctx.vwapVolume);
   }
 }
 

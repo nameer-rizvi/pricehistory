@@ -3,7 +3,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleMacd(
   opt: NormalizedOption,
@@ -20,7 +20,7 @@ function setCandleMacd(
 
   const macdLine = (fast as number) - (slow as number);
 
-  candle.macd = utils.math.num(macdLine);
+  candle.macd = utilN.math.num(macdLine);
 
   const signal = opt.macd[2];
 
@@ -35,7 +35,7 @@ function setCandleMacd(
   if (ctx.window[winKey].length < signal) return;
 
   if (ctx.macd.initialized !== true) {
-    const sma = utils.math.mean(ctx.window[winKey]);
+    const sma = utilN.math.mean(ctx.window[winKey]);
 
     if (sma === undefined) return;
 
@@ -43,9 +43,9 @@ function setCandleMacd(
 
     ctx.macd.initialized = true;
 
-    candle.macdSignal = utils.math.num(sma);
+    candle.macdSignal = utilN.math.num(sma);
 
-    candle.macdHist = utils.math.num(macdLine - sma);
+    candle.macdHist = utilN.math.num(macdLine - sma);
 
     delete ctx.window[winKey];
 
@@ -60,9 +60,9 @@ function setCandleMacd(
 
   ctx.macd.prev = emaSignal;
 
-  candle.macdSignal = utils.math.num(emaSignal);
+  candle.macdSignal = utilN.math.num(emaSignal);
 
-  candle.macdHist = utils.math.num(macdLine - emaSignal);
+  candle.macdHist = utilN.math.num(macdLine - emaSignal);
 }
 
 export default setCandleMacd;

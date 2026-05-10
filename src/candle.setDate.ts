@@ -3,7 +3,7 @@ import {
   type DataPoint,
   type Candle,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleDate(
   opt: NormalizedOption,
@@ -28,13 +28,13 @@ function setCandleDate(
 
   candle.dateMonth = date.getMonth() + 1;
 
-  candle.dateMonthName = utils.date.getMonth(date);
+  candle.dateMonthName = utilN.date.getMonth(date);
 
   candle.dateDate = date.getDate();
 
   candle.dateWeekday = date.getDay() + 1;
 
-  candle.dateWeekdayName = utils.date.getWeekday(date);
+  candle.dateWeekdayName = utilN.date.getWeekday(date);
 }
 
 export default setCandleDate;

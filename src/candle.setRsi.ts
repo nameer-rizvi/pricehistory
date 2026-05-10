@@ -3,7 +3,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleRsi(
   opt: NormalizedOption,
@@ -45,13 +45,13 @@ function setCandleRsi(
   if (ctx.window[gainWinKey].length < period) return;
 
   if (ctx.rsi.initialized !== true) {
-    const avgGain = utils.math.mean(ctx.window[gainWinKey]);
+    const avgGain = utilN.math.mean(ctx.window[gainWinKey]);
 
-    const avgLoss = utils.math.mean(ctx.window[lossWinKey]);
+    const avgLoss = utilN.math.mean(ctx.window[lossWinKey]);
 
     if (avgGain === undefined || avgLoss === undefined) return;
 
-    candle.rsi = utils.math.num(
+    candle.rsi = utilN.math.num(
       avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss),
     );
 
@@ -82,11 +82,11 @@ function setCandleRsi(
 
   const rsi = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
 
-  candle.rsi = utils.math.num(rsi);
+  candle.rsi = utilN.math.num(rsi);
 
-  candle.averageGain = utils.math.num(avgGain);
+  candle.averageGain = utilN.math.num(avgGain);
 
-  candle.averageLoss = utils.math.num(avgLoss);
+  candle.averageLoss = utilN.math.num(avgLoss);
 
   ctx.rsi.prevAvgGain = avgGain;
 

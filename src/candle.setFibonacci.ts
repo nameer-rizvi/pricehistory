@@ -3,7 +3,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 const LEVELS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1] as const;
 
@@ -43,7 +43,7 @@ function setCandleFibonacci(
   if (range === 0) return;
 
   for (const [i, level] of LEVELS.entries()) {
-    candle[KEYS[i]] = utils.math.num(ctx.fib.high - level * range);
+    candle[KEYS[i]] = utilN.math.num(ctx.fib.high - level * range);
   }
 }
 

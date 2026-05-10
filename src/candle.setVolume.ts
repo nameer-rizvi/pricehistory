@@ -4,7 +4,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleVolume(
   opt: NormalizedOption,
@@ -14,7 +14,7 @@ function setCandleVolume(
 ): void {
   const volume = curr[opt.volume];
 
-  if (!utils.isNumber(volume)) return;
+  if (!utilN.isNumber(volume)) return;
 
   candle.volume = volume;
 

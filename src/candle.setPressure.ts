@@ -3,18 +3,18 @@ import {
   type Candle,
   type NumberOrUndefined,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandlePressure(opt: NormalizedOption, candle: Candle): void {
   if (opt.pressure === false) return;
 
   const priceRange =
     candle.priceRange ??
-    utils.math.change.num(candle.priceLow, candle.priceHigh);
+    utilN.math.change.num(candle.priceLow, candle.priceHigh);
 
   const priceRangeDiff =
     candle.priceRangeDiff ??
-    utils.math.change.percent(candle.priceLow, candle.priceHigh);
+    utilN.math.change.percent(candle.priceLow, candle.priceHigh);
 
   if (priceRange === undefined || priceRangeDiff === undefined) return;
 
@@ -23,7 +23,7 @@ function setCandlePressure(opt: NormalizedOption, candle: Candle): void {
     (candle.priceHigh !== undefined &&
     candle.priceOpen !== undefined &&
     candle.priceClose !== undefined
-      ? utils.math.percent(
+      ? utilN.math.percent(
           candle.priceHigh - Math.max(candle.priceOpen, candle.priceClose),
           priceRange,
         )
@@ -34,7 +34,7 @@ function setCandlePressure(opt: NormalizedOption, candle: Candle): void {
     (candle.priceLow !== undefined &&
     candle.priceOpen !== undefined &&
     candle.priceClose !== undefined
-      ? utils.math.percent(
+      ? utilN.math.percent(
           Math.min(candle.priceOpen, candle.priceClose) - candle.priceLow,
           priceRange,
         )
@@ -63,11 +63,11 @@ function setCandlePressure(opt: NormalizedOption, candle: Candle): void {
     return;
   }
 
-  candle.pressureSelling = utils.math.num(
+  candle.pressureSelling = utilN.math.num(
     priceRangeDiff * (candlestickUpper / 100) * high * green,
   );
 
-  candle.pressureBuying = utils.math.num(
+  candle.pressureBuying = utilN.math.num(
     priceRangeDiff * (candlestickLower / 100) * -low * red,
   );
 }

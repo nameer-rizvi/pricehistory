@@ -5,7 +5,7 @@ import {
   type Context,
   type NumberOrUndefined,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandlePrice(
   opt: NormalizedOption,
@@ -21,30 +21,30 @@ function setCandlePrice(
 
   const close = curr[opt.close];
 
-  if (utils.isNumber(open)) candle.priceOpen = open;
+  if (utilN.isNumber(open)) candle.priceOpen = open;
 
-  if (utils.isNumber(high)) candle.priceHigh = high;
+  if (utilN.isNumber(high)) candle.priceHigh = high;
 
-  if (utils.isNumber(low)) candle.priceLow = low;
+  if (utilN.isNumber(low)) candle.priceLow = low;
 
-  if (utils.isNumber(close)) candle.priceClose = close;
+  if (utilN.isNumber(close)) candle.priceClose = close;
 
   const prevClose = ctx.prevClose;
 
-  if (opt.leverage !== undefined && utils.isNumber(open)) {
+  if (opt.leverage !== undefined && utilN.isNumber(open)) {
     const levOpen = calcLeverage(opt.leverage, ctx.prevClose2, open, prevClose);
 
     candle.priceOpen = levOpen;
 
-    if (utils.isNumber(high)) {
+    if (utilN.isNumber(high)) {
       candle.priceHigh = calcLeverage(opt.leverage, open, high, levOpen);
     }
 
-    if (utils.isNumber(low)) {
+    if (utilN.isNumber(low)) {
       candle.priceLow = calcLeverage(opt.leverage, open, low, levOpen);
     }
 
-    if (utils.isNumber(close)) {
+    if (utilN.isNumber(close)) {
       const levClose = calcLeverage(opt.leverage, open, close, levOpen);
       if (levClose !== undefined) candle.priceClose = levClose;
     }
@@ -52,38 +52,38 @@ function setCandlePrice(
 
   if (opt.price !== true) return;
 
-  candle.priceMean = utils.math.mean(
+  candle.priceMean = utilN.math.mean(
     candle.priceOpen,
     candle.priceHigh,
     candle.priceLow,
     candle.priceClose,
   );
 
-  candle.priceChange = utils.math.change.percent(prevClose, candle.priceClose);
+  candle.priceChange = utilN.math.change.percent(prevClose, candle.priceClose);
 
-  candle.priceChangePremarket = utils.math.change.percent(
+  candle.priceChangePremarket = utilN.math.change.percent(
     prevClose,
     candle.priceOpen,
   );
 
-  candle.priceChangeIntraday = utils.math.change.percent(
+  candle.priceChangeIntraday = utilN.math.change.percent(
     candle.priceOpen,
     candle.priceClose,
   );
 
-  candle.priceChangeCumulative = utils.math.change.percent(
+  candle.priceChangeCumulative = utilN.math.change.percent(
     opt.basePrice,
     candle.priceClose,
   );
 
-  candle.priceRange = utils.math.change.num(candle.priceLow, candle.priceHigh);
+  candle.priceRange = utilN.math.change.num(candle.priceLow, candle.priceHigh);
 
-  candle.priceRangeDiff = utils.math.change.percent(
+  candle.priceRangeDiff = utilN.math.change.percent(
     candle.priceLow,
     candle.priceHigh,
   );
 
-  candle.priceRangeMean = utils.math.mean(candle.priceLow, candle.priceHigh);
+  candle.priceRangeMean = utilN.math.mean(candle.priceLow, candle.priceHigh);
 }
 
 function calcLeverage(
@@ -92,10 +92,10 @@ function calcLeverage(
   curr?: number,
   mark?: number,
 ): NumberOrUndefined {
-  if (!utils.isNumber(mark) || !utils.isNumber(prev) || !utils.isNumber(curr))
+  if (!utilN.isNumber(mark) || !utilN.isNumber(prev) || !utilN.isNumber(curr))
     return;
-  const change = (utils.math.change.percent(prev, curr)! / 100) * lev;
-  return utils.math.num(mark * (1 + change));
+  const change = (utilN.math.change.percent(prev, curr)! / 100) * lev;
+  return utilN.math.num(mark * (1 + change));
 }
 
 export default setCandlePrice;

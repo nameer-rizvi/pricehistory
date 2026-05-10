@@ -4,7 +4,7 @@ import {
   type Context,
   type Color,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleColor(
   opt: NormalizedOption,
@@ -67,40 +67,40 @@ function setCandleColor(
   }
 
   if (period !== undefined) {
-    candle[`sma${period}ColorGreen`] = utils.math.percent(greenCount, total);
+    candle[`sma${period}ColorGreen`] = utilN.math.percent(greenCount, total);
 
-    candle[`sma${period}ColorRed`] = utils.math.percent(redCount, total);
+    candle[`sma${period}ColorRed`] = utilN.math.percent(redCount, total);
 
-    candle[`sma${period}ColorGray`] = utils.math.percent(grayCount, total);
+    candle[`sma${period}ColorGray`] = utilN.math.percent(grayCount, total);
 
-    candle[`sma${period}ColorVolumeGreen`] = utils.math.percent(
+    candle[`sma${period}ColorVolumeGreen`] = utilN.math.percent(
       greenVolume,
       totalVolume,
     );
 
-    candle[`sma${period}ColorVolumeRed`] = utils.math.percent(
+    candle[`sma${period}ColorVolumeRed`] = utilN.math.percent(
       redVolume,
       totalVolume,
     );
 
-    candle[`sma${period}ColorVolumeGray`] = utils.math.percent(
+    candle[`sma${period}ColorVolumeGray`] = utilN.math.percent(
       grayVolume,
       totalVolume,
     );
   } else {
     candle.color = color;
 
-    candle.colorGreen = utils.math.percent(greenCount, total);
+    candle.colorGreen = utilN.math.percent(greenCount, total);
 
-    candle.colorRed = utils.math.percent(redCount, total);
+    candle.colorRed = utilN.math.percent(redCount, total);
 
-    candle.colorGray = utils.math.percent(grayCount, total);
+    candle.colorGray = utilN.math.percent(grayCount, total);
 
-    candle.colorVolumeGreen = utils.math.percent(greenVolume, totalVolume);
+    candle.colorVolumeGreen = utilN.math.percent(greenVolume, totalVolume);
 
-    candle.colorVolumeRed = utils.math.percent(redVolume, totalVolume);
+    candle.colorVolumeRed = utilN.math.percent(redVolume, totalVolume);
 
-    candle.colorVolumeGray = utils.math.percent(grayVolume, totalVolume);
+    candle.colorVolumeGray = utilN.math.percent(grayVolume, totalVolume);
   }
 }
 

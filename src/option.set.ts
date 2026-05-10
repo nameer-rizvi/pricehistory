@@ -3,7 +3,7 @@ import {
   type DataPoint,
   type NormalizedOption,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
   const normalized = option as NormalizedOption;
@@ -26,7 +26,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
   if (normalized.basePrice === undefined) {
     for (const curr of series) {
       const open = curr[normalized.open];
-      if (utils.isNumber(open)) {
+      if (utilN.isNumber(open)) {
         normalized.basePrice = open;
         break;
       }
@@ -39,7 +39,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
 
   if (option.rsi === true) {
     normalized.rsi = 14; // J. Welles Wilder's optimal setting
-  } else if (normalized.rsi !== undefined && !utils.isNumber(normalized.rsi)) {
+  } else if (normalized.rsi !== undefined && !utilN.isNumber(normalized.rsi)) {
     normalized.rsi = false;
   }
 
@@ -51,8 +51,8 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
 
   if (option.ema === true) {
     normalized.ema = [5, 8, 13]; // The Fibonacci Trio
-  } else if (utils.isArray(normalized.ema)) {
-    normalized.ema = normalized.ema.filter(utils.isNumber);
+  } else if (utilN.isArray(normalized.ema)) {
+    normalized.ema = normalized.ema.filter(utilN.isNumber);
   } else {
     normalized.ema = [];
   }
@@ -65,8 +65,8 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
     normalized.macd = [12, 26, 9]; // Fast, Slow, Signal
   }
 
-  if (utils.isArray(normalized.macd)) {
-    const macd = normalized.macd.filter(utils.isNumber);
+  if (utilN.isArray(normalized.macd)) {
+    const macd = normalized.macd.filter(utilN.isNumber);
     if (macd.length === 3) {
       normalized.macd = [macd[0], macd[1], macd[2]];
       normalized.ema = [...new Set([...normalized.ema, macd[0], macd[1]])];
@@ -87,8 +87,8 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
 
   if (option.sma === true) {
     normalized.sma = [10, 50]; // Personal preference
-  } else if (utils.isArray(normalized.sma)) {
-    normalized.sma = normalized.sma.filter(utils.isNumber);
+  } else if (utilN.isArray(normalized.sma)) {
+    normalized.sma = normalized.sma.filter(utilN.isNumber);
   } else {
     normalized.sma = [];
   }
@@ -97,12 +97,12 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
    * SIGNAL
    */
 
-  if (utils.isArray(option.signal)) {
-    if (option.signal.every(utils.isString)) {
+  if (utilN.isArray(option.signal)) {
+    if (option.signal.every(utilN.isString)) {
       normalized.signal = [option.signal];
     }
     normalized.signal = normalized.signal.filter((signal) => {
-      return utils.isArray(signal) && signal.every(utils.isString);
+      return utilN.isArray(signal) && signal.every(utilN.isString);
     });
   } else {
     normalized.signal = [];
@@ -116,7 +116,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
     normalized.phase = 10; // Personal preference
   }
 
-  if (utils.isNumber(normalized.phase)) {
+  if (utilN.isNumber(normalized.phase)) {
     normalized.color = true;
     if (!normalized.sma.includes(normalized.phase)) {
       normalized.sma.push(normalized.phase);
@@ -134,7 +134,7 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
     normalized.pressure = 10; // Personal preference
   }
 
-  if (utils.isNumber(normalized.pressure)) {
+  if (utilN.isNumber(normalized.pressure)) {
     normalized.color = true;
     if (!normalized.sma.includes(normalized.pressure)) {
       normalized.sma.push(normalized.pressure);
@@ -152,8 +152,8 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
     normalized.anchor = [0, 50, 100]; // Personal preference
   }
 
-  if (utils.isArray(normalized.anchor)) {
-    normalized.anchor = normalized.anchor.filter(utils.isNumber);
+  if (utilN.isArray(normalized.anchor)) {
+    normalized.anchor = normalized.anchor.filter(utilN.isNumber);
   } else {
     normalized.anchor = [];
   }
@@ -162,8 +162,8 @@ function setOptions(option: Option, series: DataPoint[]): NormalizedOption {
    * NORMALIZE
    */
 
-  if (utils.isArray(normalized.normalize)) {
-    normalized.normalize = normalized.normalize.filter(utils.isString);
+  if (utilN.isArray(normalized.normalize)) {
+    normalized.normalize = normalized.normalize.filter(utilN.isString);
   } else {
     normalized.normalize = [];
   }

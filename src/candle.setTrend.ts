@@ -3,7 +3,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 import { trendKeys } from "./keys.js";
 
 function setCandleTrend(
@@ -23,7 +23,7 @@ function setCandleTrend(
 
       const prev = ctx.trend[key];
 
-      const symbol = utils.math.change.symbol(prev?.[0], value);
+      const symbol = utilN.math.change.symbol(prev?.[0], value);
 
       const direction = symbol?.[0] ?? 0;
 

@@ -3,7 +3,7 @@ import {
   type Candle,
   type Context,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandleSignal(
   opt: NormalizedOption,
@@ -12,9 +12,9 @@ function setCandleSignal(
 ): void {
   for (const [anchor, ...keys] of opt.signal) {
     for (const k of keys) {
-      const key = `signal${utils.capitalize(anchor)}To${utils.capitalize(k)}`;
+      const key = `signal${utilN.capitalize(anchor)}To${utilN.capitalize(k)}`;
 
-      candle[key] = utils.math.change.percent(candle[anchor], candle[k]);
+      candle[key] = utilN.math.change.percent(candle[anchor], candle[k]);
 
       for (const period of opt.sma) {
         const winKey = `signal${period}${key}`;
@@ -25,7 +25,7 @@ function setCandleSignal(
 
         if (ctx.window[winKey].length > period) ctx.window[winKey].shift();
 
-        candle[`sma${period}${utils.capitalize(key)}`] = utils.math.mean(
+        candle[`sma${period}${utilN.capitalize(key)}`] = utilN.math.mean(
           ctx.window[winKey],
         );
       }

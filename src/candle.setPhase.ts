@@ -3,7 +3,7 @@ import {
   type Candle,
   type NumberOrUndefined,
 } from "./interfaces.js";
-import * as utils from "@nameer/utils";
+import * as utilN from "@nameer/utils";
 
 function setCandlePhase(opt: NormalizedOption, candle: Candle): void {
   if (opt.phase === false) return;
@@ -28,9 +28,9 @@ function setCandlePhase(opt: NormalizedOption, candle: Candle): void {
   )
     return;
 
-  const phaseDistribution = utils.math.num(high * (green / 10));
+  const phaseDistribution = utilN.math.num(high * (green / 10));
 
-  const phaseAccumulation = utils.math.num(-low * (red / 10));
+  const phaseAccumulation = utilN.math.num(-low * (red / 10));
 
   if (phaseDistribution === undefined || phaseAccumulation === undefined) {
     return;
